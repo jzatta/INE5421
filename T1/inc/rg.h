@@ -8,15 +8,15 @@
 
 #include "alphabet.h"
 
-class GR;
-class AF;
-class ER;
+class RG;
+class FA;
+class RE;
 
-class GR {
+class RG {
 public:
-  static GR * parse(std::string &);
+  static RG * parse(std::string &);
   
-  GR();
+  RG();
   
 private:
   static bool lexicalAnalysis(std::string &);

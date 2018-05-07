@@ -2,17 +2,17 @@
 #include <iostream>
 #include "gr.h"
 
-GR::GR() {
+RG::RG() {
   
 }
 
-GR *GR::parse(std::string &s) {
+RG *RG::parse(std::string &s) {
   if (!lexicalAnalysis(s)) {
     throw "Unrecognized Symbols";
   }
   
   if (!sintaxAnalysis(s)) {
-    throw "Not an GR";
+    throw "Not an RG";
   }
   
   
@@ -20,7 +20,7 @@ GR *GR::parse(std::string &s) {
   return NULL;
 }
 
-bool GR::lexicalAnalysis(std::string &s) {
+bool RG::lexicalAnalysis(std::string &s) {
   int length = s.length();
   int index;
   char c;
@@ -44,7 +44,7 @@ bool GR::lexicalAnalysis(std::string &s) {
   return true;
 }
 
-bool GR::sintaxAnalysis(std::string &s) {
+bool RG::sintaxAnalysis(std::string &s) {
   int length = s.length();
   int index;
   char c;

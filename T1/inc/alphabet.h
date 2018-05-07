@@ -13,6 +13,7 @@ public:
 public:
   static bool isTerminal(char);
   Terminal(char);
+  Terminal();
   
 private:
   
@@ -30,6 +31,7 @@ public:
 public:
   static bool isNonTerminal(char);
   NonTerminal(char);
+  NonTerminal();
 private:
   int index;
 };
