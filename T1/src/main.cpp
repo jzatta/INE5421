@@ -5,17 +5,19 @@
 #include <stdint.h>
 #include <string>
 
-#include "gr.h"
+#include "rg.h"
 
 int main(int argc, char **argv) {
   std::string s;
   
-  s += "S -> aS | bB | a | b\nB->a|aS";
+//   s += "S -> aS | bB | a | b\nB->a|aS\nA->aA|a";
+  
+  s += "S -> & | aB | bB | a | b\nB->a|aB\nA->aA|a";
 //   s += "S->aS|bB|a|b\nB->a|aS";
   std::cout << s << std::endl;
   
   try {
-    GR::parse(s);
+    RG::parse(s);
   } catch (const char *s) {
     std::cout << "ERROR: " << s << std::endl;
   }

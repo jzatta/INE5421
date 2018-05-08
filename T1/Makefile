@@ -1,5 +1,5 @@
 
-APP = lr
+APP = lr.out
 
 SRCDIR = src
 INCDIR = inc
@@ -41,7 +41,7 @@ test:
 $(OBJDIR):
 	$(MKDIR) $(OBJDIR)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(INCDIR)/*.h | $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(APP): $(OBJS)
