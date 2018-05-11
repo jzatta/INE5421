@@ -1,6 +1,6 @@
 
 
-class Terminal {
+public class Terminal {
   private int symbol;
   public static final int COUNT = 37;
   public static final char CHARACTERS[] = {

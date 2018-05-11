@@ -1,6 +1,6 @@
 
 
-class NonTerminal {
+public class NonTerminal {
   private int symbol;
   public static final int COUNT = 27;
   public static final char CHARACTERS[] = {
