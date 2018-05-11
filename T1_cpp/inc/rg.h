@@ -8,6 +8,7 @@
 #include <list>
 
 #include "alphabet.h"
+#include "rl.h"
 
 class RG;
 class FA;
@@ -15,7 +16,7 @@ class RE;
 
 using namespace std;
 
-class RG {
+class RG: public RL {
 public:
   static RG * parse(std::string &);
   
