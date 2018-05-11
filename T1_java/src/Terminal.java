@@ -20,7 +20,7 @@ class Terminal {
 //       throw "Dont belongs to Terminal";
   }
   
-  public static boolean isTerminal(char c) {
+  public static boolean belongs(char c) {
     return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || c == '&';
   }
   

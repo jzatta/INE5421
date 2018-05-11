@@ -17,6 +17,9 @@ JAVAC = javac
 fast:
 	@make -j 8 all
 
+fast_run: fast
+	$(JAVA) -cp $(BINDIR) $(MAINCLASS)
+
 all: $(OBJ)
 
 run: all
