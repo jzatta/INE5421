@@ -14,6 +14,8 @@ JAVAC = javac
 
 .PHONY: all run clean
 
+fast:
+	@make -j 8 all
 
 all: $(OBJ)
 
