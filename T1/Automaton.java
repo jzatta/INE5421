@@ -66,12 +66,17 @@ public class Automaton {
 		for (char c: str) {
 			if (String.valueOf(c).equals("$")) break;
 
+			Boolean error = true;
 			for (String[] s: transitions) {
 				if (s[0].equals(currentState) && s[1].equals(String.valueOf(c))) {
 					currentState = s[2];
+					error = false;
 					break;
 				}
 			}
+
+			if (error)
+				return false;
 		}
 
 		if (finalStates.contains(currentState))
