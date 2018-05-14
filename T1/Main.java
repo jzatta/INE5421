@@ -65,7 +65,7 @@ public class Main {
     btn_GRsUnion.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         JFrame GRsUnionFrame = new JFrame();
-        GRsUnionFrame.setSize(680, 350);
+        GRsUnionFrame.setSize(680, 390);
         GRsUnionFrame.setLayout(null);
         GRsUnionFrame.setVisible(true);
         GRsUnionFrame.setTitle("União de GRs -> GR");
@@ -86,8 +86,35 @@ public class Main {
         G.setEditable(false);
         GRsUnionFrame.add(G);
 
+        JButton loadG1 = new JButton("Carregar G1");
+        loadG1.setBounds(10, 270, 200, 30);
+        loadG1.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            G1.setText(Utils.loadFromDisk());
+          }
+        });
+        GRsUnionFrame.add(loadG1);
+
+        JButton loadG2 = new JButton("Carregar G2");
+        loadG2.setBounds(220, 270, 200, 30);
+        loadG2.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            G2.setText(Utils.loadFromDisk());
+          }
+        });
+        GRsUnionFrame.add(loadG2);
+
+        JButton saveG = new JButton("Gravar no disco");
+        saveG.setBounds(460, 270, 200, 30);
+        saveG.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Utils.saveToDisk(G.getText());
+          }
+        });
+        GRsUnionFrame.add(saveG);
+
         JButton Union = new JButton("Obter G1 U G2");
-        Union.setBounds(10, 270, 410, 30);
+        Union.setBounds(10, 310, 410, 30);
         Union.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Grammar Grammar1 = Grammar.readGrammar(G1.getText());
@@ -106,7 +133,7 @@ public class Main {
     btn_GRsConcatenation.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           JFrame GRsConcatenationFrame = new JFrame();
-          GRsConcatenationFrame.setSize(680, 350);
+          GRsConcatenationFrame.setSize(680, 390);
           GRsConcatenationFrame.setLayout(null);
           GRsConcatenationFrame.setVisible(true);
           GRsConcatenationFrame.setTitle("Concatenação de GRs -> GR");
@@ -127,8 +154,35 @@ public class Main {
           G.setEditable(false);
           GRsConcatenationFrame.add(G);
 
+          JButton loadG1 = new JButton("Carregar G1");
+          loadG1.setBounds(10, 270, 200, 30);
+          loadG1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              G1.setText(Utils.loadFromDisk());
+            }
+          });
+          GRsConcatenationFrame.add(loadG1);
+
+          JButton loadG2 = new JButton("Carregar G2");
+          loadG2.setBounds(220, 270, 200, 30);
+          loadG2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              G2.setText(Utils.loadFromDisk());
+            }
+          });
+          GRsConcatenationFrame.add(loadG2);
+
+          JButton saveG = new JButton("Gravar no disco");
+          saveG.setBounds(460, 270, 200, 30);
+          saveG.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Utils.saveToDisk(G.getText());
+            }
+          });
+          GRsConcatenationFrame.add(saveG);
+
           JButton Concatenation = new JButton("Obter G1 . G2");
-          Concatenation.setBounds(10, 270, 410, 30);
+          Concatenation.setBounds(10, 310, 410, 30);
           Concatenation.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               Grammar Grammar1 = Grammar.readGrammar(G1.getText());
@@ -147,7 +201,7 @@ public class Main {
     btn_GRsClosure.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           JFrame GRsClosureFrame = new JFrame();
-          GRsClosureFrame.setSize(480, 350);
+          GRsClosureFrame.setSize(480, 390);
           GRsClosureFrame.setLayout(null);
           GRsClosureFrame.setVisible(true);
           GRsClosureFrame.setTitle("Fechamento de GR -> GR");
@@ -163,8 +217,26 @@ public class Main {
           G.setEditable(false);
           GRsClosureFrame.add(G);
 
+          JButton loadG1 = new JButton("Carregar G");
+          loadG1.setBounds(10, 270, 200, 30);
+          loadG1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              G1.setText(Utils.loadFromDisk());
+            }
+          });
+          GRsClosureFrame.add(loadG1);
+
+          JButton saveG = new JButton("Gravar no disco");
+          saveG.setBounds(260, 270, 200, 30);
+          saveG.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Utils.saveToDisk(G.getText());
+            }
+          });
+          GRsClosureFrame.add(saveG);
+
           JButton KleeneClosure = new JButton("Obter G*");
-          KleeneClosure.setBounds(10, 270, 200, 30);
+          KleeneClosure.setBounds(10, 310, 200, 30);
           KleeneClosure.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               Grammar Grammar1 = Grammar.readGrammar(G1.getText());
