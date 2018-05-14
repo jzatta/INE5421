@@ -5,3 +5,9 @@ Automaton:
   |  | 0| 1|
  >|q0|q1|q0|
 * |q1|q0|q1|
+
+Regex:
+a?bb*
+
+Sentence:
+aabb$

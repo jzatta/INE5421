@@ -301,11 +301,15 @@ public class Main {
 
     setUpInterface(home);
 
-    String str = "  |  | 0| 1|\n" +
-    			 " >|q0|q1|q0|\n" +
-    			 "* |q1|q0|q1|";
+    // String str = "  |  | 0| 1|\n" +
+    // 			 " >|q0|q1|q0|\n" +
+    // 			 "* |q1|q0|q1|";
+    //
+    // Automaton M = Automaton.readAutomaton(str);
+    //
+    // System.out.println(M.recognize("100"));
 
-    System.out.println(Automaton.readAutomaton(str).toString());
+    // System.out.println(Automaton.readAutomaton(str).toString());
   }
 
 }
