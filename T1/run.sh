@@ -1,3 +1,3 @@
 javac *.java
-java Interface
+java Main
 rm *.class
