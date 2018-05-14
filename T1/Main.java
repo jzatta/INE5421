@@ -1,13 +1,14 @@
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.Font;
+import java.awt.Color;
 
 public class Main {
 
   private static void createButtons(JFrame frame) {
     int topPosition = 30;
 
-    JButton btn_newGrammar = new JButton("Editar Gramática");
+    JButton btn_newGrammar = new JButton("Editar GR");
     btn_newGrammar.setBounds(50, topPosition, 130, 30);
     btn_newGrammar.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -15,7 +16,7 @@ public class Main {
       }
     });
 
-    JButton btn_newAutomaton = new JButton("Editar Autômato F.");
+    JButton btn_newAutomaton = new JButton("Editar AF");
     btn_newAutomaton.setBounds(185, topPosition, 130, 30);
     btn_newAutomaton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -23,7 +24,7 @@ public class Main {
       }
     });
 
-    JButton btn_newRegex = new JButton("Editar Expressão R.");
+    JButton btn_newRegex = new JButton("Editar ER");
     btn_newRegex.setBounds(320, topPosition, 130, 30);
     btn_newRegex.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -104,7 +105,7 @@ public class Main {
         });
         GRsUnionFrame.add(loadG2);
 
-        JButton saveG = new JButton("Gravar no disco");
+        JButton saveG = new JButton("Salvar");
         saveG.setBounds(460, 270, 200, 30);
         saveG.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -172,7 +173,7 @@ public class Main {
           });
           GRsConcatenationFrame.add(loadG2);
 
-          JButton saveG = new JButton("Gravar no disco");
+          JButton saveG = new JButton("Salvar");
           saveG.setBounds(460, 270, 200, 30);
           saveG.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -226,7 +227,7 @@ public class Main {
           });
           GRsClosureFrame.add(loadG1);
 
-          JButton saveG = new JButton("Gravar no disco");
+          JButton saveG = new JButton("Salvar");
           saveG.setBounds(260, 270, 200, 30);
           saveG.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -251,6 +252,64 @@ public class Main {
 
     JButton btn_AFRecognition = new JButton("Reconhecimento de Sentenças (AF)");
     btn_AFRecognition.setBounds(50, topPosition, 400, 30);
+    btn_AFRecognition.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          JFrame AFRecognitionFrame = new JFrame();
+          AFRecognitionFrame.setSize(450, 390);
+          AFRecognitionFrame.setLayout(null);
+          AFRecognitionFrame.setVisible(true);
+          AFRecognitionFrame.setTitle("Reconhecimento de Sentenças (AF)");
+
+          JTextArea AF = new JTextArea("  |  | 0| 1|\n" +
+                                			 " >|q0|q1|q0|\n" +
+                                			 "* |q1|q0|q1|");
+          AF.setBounds(10, 10, 200, 250);
+          AF.setFont(new Font("monospaced", Font.PLAIN, 14));
+          AFRecognitionFrame.add(AF);
+
+          JLabel SentenceLbl = new JLabel("Insira a sentença:");
+          SentenceLbl.setBounds(220, 10, 200, 30);
+          SentenceLbl.setFont(new Font("monospaced", Font.PLAIN, 14));
+          AFRecognitionFrame.add(SentenceLbl);
+
+          JTextField Sentence = new JTextField("011$");
+          Sentence.setBounds(220, 40, 200, 30);
+          Sentence.setFont(new Font("monospaced", Font.PLAIN, 14));
+          AFRecognitionFrame.add(Sentence);
+
+          JLabel Result = new JLabel("SENTENÇA RECONHECIDA");
+          Result.setBounds(230, 150, 200, 30);
+          Result.setFont(new Font("monospaced", Font.BOLD, 14));
+          Result.setForeground(new Color(0, 130, 0));
+          AFRecognitionFrame.add(Result);
+
+          JButton loadAF = new JButton("Carregar AF");
+          loadAF.setBounds(10, 270, 200, 30);
+          loadAF.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              AF.setText(Utils.loadFromDisk());
+            }
+          });
+          AFRecognitionFrame.add(loadAF);
+
+          JButton Recognition = new JButton("Reconhecer Sentença");
+          Recognition.setBounds(10, 310, 410, 30);
+          Recognition.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Automaton M = Automaton.readAutomaton(AF.getText());
+
+              if (M.recognize(Sentence.getText())) {
+                Result.setText("SENTENÇA RECONHECIDA");
+                Result.setForeground(new Color(0, 130, 0));
+              } else {
+                Result.setText("SENTENÇA NÃO RECONHECIDA");
+                Result.setForeground(new Color(130, 0, 0));
+              }
+            }
+          });
+          AFRecognitionFrame.add(Recognition);
+        }
+      });
     topPosition += 40;
 
     JButton btn_AFEnumeration = new JButton("Enumeração de Sentenças de Tamanho N (AF)");
@@ -300,16 +359,6 @@ public class Main {
     JFrame home = new JFrame();
 
     setUpInterface(home);
-
-    // String str = "  |  | 0| 1|\n" +
-    // 			 " >|q0|q1|q0|\n" +
-    // 			 "* |q1|q0|q1|";
-    //
-    // Automaton M = Automaton.readAutomaton(str);
-    //
-    // System.out.println(M.recognize("100"));
-
-    // System.out.println(Automaton.readAutomaton(str).toString());
   }
 
 }

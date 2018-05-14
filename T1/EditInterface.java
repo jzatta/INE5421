@@ -25,7 +25,7 @@ public class EditInterface {
     text.setFont(new Font("monospaced", Font.PLAIN, 14));
     frame.add(text);
 
-    JButton loadBtn = new JButton("Carregar do disco");
+    JButton loadBtn = new JButton("Carregar");
     loadBtn.setBounds(20, 320, 128, 30);
     loadBtn.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -34,7 +34,7 @@ public class EditInterface {
     });
     frame.add(loadBtn);
 
-    JButton saveBtn = new JButton("Gravar no disco");
+    JButton saveBtn = new JButton("Salvar");
     saveBtn.setBounds(150, 320, 125, 30);
     saveBtn.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
