@@ -1,10 +1,36 @@
 import javax.swing.*;
 import java.awt.event.*;
+import java.awt.Font;
 
 public class Main {
 
   private static void createButtons(JFrame frame) {
     int topPosition = 30;
+
+    JButton btn_newGrammar = new JButton("Editar Gramática");
+    btn_newGrammar.setBounds(50, topPosition, 130, 30);
+    btn_newGrammar.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        EditInterface eI = new EditInterface(EditInterface.Type.GRAMMAR);
+      }
+    });
+
+    JButton btn_newAutomaton = new JButton("Editar Autômato F.");
+    btn_newAutomaton.setBounds(185, topPosition, 130, 30);
+    btn_newAutomaton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        EditInterface eI = new EditInterface(EditInterface.Type.AUTOMATON);
+      }
+    });
+
+    JButton btn_newRegex = new JButton("Editar Expressão R.");
+    btn_newRegex.setBounds(320, topPosition, 130, 30);
+    btn_newRegex.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        EditInterface eI = new EditInterface(EditInterface.Type.REGEX);
+      }
+    });
+    topPosition += 40;
 
     JButton btn_DeSimone = new JButton("ER -> AF (De Simone)");
     btn_DeSimone.setBounds(50, topPosition, 400, 30);
@@ -46,14 +72,17 @@ public class Main {
 
         JTextArea G1 = new JTextArea("S->aS|a");
         G1.setBounds(10, 10, 200, 250);
+        G1.setFont(new Font("monospaced", Font.PLAIN, 14));
         GRsUnionFrame.add(G1);
 
         JTextArea G2 = new JTextArea("A->aA|a");
         G2.setBounds(220, 10, 200, 250);
+        G2.setFont(new Font("monospaced", Font.PLAIN, 14));
         GRsUnionFrame.add(G2);
 
-        JTextArea G = new JTextArea("Resultados irão aparecer aqui");
+        JTextArea G = new JTextArea();
         G.setBounds(460, 10, 200, 250);
+        G.setFont(new Font("monospaced", Font.PLAIN, 14));
         G.setEditable(false);
         GRsUnionFrame.add(G);
 
@@ -84,14 +113,17 @@ public class Main {
 
           JTextArea G1 = new JTextArea("S->aS|a");
           G1.setBounds(10, 10, 200, 250);
+          G1.setFont(new Font("monospaced", Font.PLAIN, 14));
           GRsConcatenationFrame.add(G1);
 
           JTextArea G2 = new JTextArea("A->aA|a");
           G2.setBounds(220, 10, 200, 250);
+          G2.setFont(new Font("monospaced", Font.PLAIN, 14));
           GRsConcatenationFrame.add(G2);
 
-          JTextArea G = new JTextArea("Resultados irão aparecer aqui");
+          JTextArea G = new JTextArea();
           G.setBounds(460, 10, 200, 250);
+          G.setFont(new Font("monospaced", Font.PLAIN, 14));
           G.setEditable(false);
           GRsConcatenationFrame.add(G);
 
@@ -122,10 +154,12 @@ public class Main {
 
           JTextArea G1 = new JTextArea("S->aS|a");
           G1.setBounds(10, 10, 200, 250);
+          G1.setFont(new Font("monospaced", Font.PLAIN, 14));
           GRsClosureFrame.add(G1);
 
-          JTextArea G = new JTextArea("Resultados irão aparecer aqui");
+          JTextArea G = new JTextArea();
           G.setBounds(260, 10, 200, 250);
+          G.setFont(new Font("monospaced", Font.PLAIN, 14));
           G.setEditable(false);
           GRsClosureFrame.add(G);
 
@@ -151,6 +185,9 @@ public class Main {
     btn_AFEnumeration.setBounds(50, topPosition, 400, 30);
     topPosition += 40;
 
+    frame.add(btn_newGrammar);
+    frame.add(btn_newAutomaton);
+    frame.add(btn_newRegex);
     frame.add(btn_DeSimone);
     frame.add(btn_GrToAf);
     frame.add(btn_AfToGr);
@@ -187,15 +224,15 @@ public class Main {
 	} catch (UnsupportedLookAndFeelException e) {
 		e.printStackTrace();
 	}
-	  
+
     JFrame home = new JFrame();
 
     setUpInterface(home);
-    
-    String str = "  |  | 0| 1|\n" + 
-    			 " >|q0|q1|q0|\n" + 
+
+    String str = "  |  | 0| 1|\n" +
+    			 " >|q0|q1|q0|\n" +
     			 "* |q1|q0|q1|";
-    
+
     System.out.println(Automaton.readAutomaton(str).toString());
   }
 

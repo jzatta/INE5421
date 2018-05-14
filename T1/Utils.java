@@ -1,6 +1,46 @@
 import java.util.*;
+import java.io.*;
+import javax.swing.*;
+import java.nio.charset.Charset;
 
 public class Utils {
+
+  public static void saveToDisk(String s) {
+    JFileChooser save = new JFileChooser();
+    save.showSaveDialog(null);
+    File file = new File(save.getSelectedFile().getAbsolutePath());
+
+    try {
+      char buffer[] = new char[s.length()];
+      s.getChars(0, s.length(), buffer, 0);
+
+      FileWriter f = new FileWriter(file + ".txt");
+
+      for (int i = 0; i < buffer.length; i++) {
+        f.write(buffer[i]);
+      }
+
+      f.close();
+    } catch (Exception e) {}
+  }
+
+  public static String loadFromDisk() {
+    JFileChooser open = new JFileChooser();
+    open.showOpenDialog(null);
+    File file = new File(open.getSelectedFile().getAbsolutePath());
+
+    Charset charset = Charset.forName("UTF-8");
+
+    String ret = "";
+
+    try {
+      JTextArea tmp = new JTextArea();
+      tmp.read(new FileReader(file.getAbsolutePath()), null);
+      ret = tmp.getText();
+    } catch (IOException e) {}
+
+    return ret;
+  }
 
   public static Grammar kleeneClosure(Grammar G1) {
 	LinkedList<String[]> productionsG1 = G1.getProductions();
