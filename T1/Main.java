@@ -192,9 +192,9 @@ public class Main {
 
     setUpInterface(home);
     
-    String str = "  | 0| 1|\n" + 
-    			 "q0|q1|q0|\n" + 
-    			 "q1|q0|q1|";
+    String str = "  |  | 0| 1|\n" + 
+    			 " >|q0|q1|q0|\n" + 
+    			 "* |q1|q0|q1|";
     
     System.out.println(Automaton.readAutomaton(str).toString());
   }

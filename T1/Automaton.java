@@ -11,14 +11,21 @@ public class Automaton {
 	String initialState = "";
 	LinkedList<String> finalStates = new LinkedList<String>();
 
-	// TODO Initial and Final States
 	public Automaton() {}
 	
-	String getInitialState() {
+	public void setInitialState(String initialState) {
+		this.initialState = initialState;
+	}
+	
+	public String getInitialState() {
 		return initialState;
 	}
 	
-	LinkedList<String> getFinalStates() {
+	public void setFinalStates(LinkedList<String> finalStates) {
+		this.finalStates = finalStates;
+	}
+	
+	public LinkedList<String> getFinalStates() {
 		return finalStates;
 	}
 	
@@ -53,7 +60,7 @@ public class Automaton {
 	
 	public String toString() {
 		String ln = System.getProperty("line.separator");
-		String str = "  |";
+		String str = "  |  |";
 		
 		for (String s:symbols) {
 			str += " " + s + "|";
@@ -61,7 +68,18 @@ public class Automaton {
 			
 		for (String s:states) {
 			str += ln;
-			str += s + "|";
+			
+			if (finalStates.contains(s))
+				str += "*";
+			else
+				str += " ";
+			
+			if (initialState.equals(s))
+				str += ">";
+			else
+				str += " ";
+			
+			str += "|" + s + "|";
 			
 			for (String r:symbols) {
 				for (String[] t:transitions) {
@@ -81,26 +99,35 @@ public class Automaton {
 	public static Automaton readAutomaton(String s) {
 		String[] lines = s.split(System.getProperty("line.separator"));
 		LinkedList<String> symbols = new LinkedList<String>();
+		LinkedList<String> finalStates = new LinkedList<String>();
 		
 		Automaton M = new Automaton();
 		
 		String[] r = lines[0].split("\\|");
-		for (int i = 1; i < r.length; i++) {
+		for (int i = 2; i < r.length; i++) {
 			symbols.addLast(String.valueOf(r[i].charAt(1)));
 		}
 		
 		for (int i = 1; i < lines.length; i++) {
 			r = lines[i].split("\\|");
 			
-			String X = r[0];
+			if (String.valueOf(r[0].charAt(0)).equals("*"))
+				finalStates.addLast(r[1]);
+			
+			if (String.valueOf(r[0].charAt(1)).equals(">"))
+				M.setInitialState(r[1]);
+			
+			String X = r[1];
 			
 			for (int j = 0; j < symbols.size(); j++) {
 				String x = symbols.get(j);
-				String Y = r[j+1];
+				String Y = r[j+2];
 				
 				M.addTransition(X, x, Y);
 			}
 		}
+		
+		M.setFinalStates(finalStates);
 		
 		return M;
 	}
