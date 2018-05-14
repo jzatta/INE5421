@@ -1,0 +1,7 @@
+Grammar:
+S->aS|a
+
+Automaton:
+  | 0| 1|
+q0|q1|q0|
+q1|q0|q1|
