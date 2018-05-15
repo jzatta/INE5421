@@ -59,12 +59,7 @@ public class Automaton {
 		transitions.addLast(transition);
 	}
 
-	private static Automaton removeEpisilonTransitions(Automaton NFA) {
-
-		return NFA;
-	}
-
-	private static Automaton removeMultipleTranstitions(Automaton NFA) {
+	public static Automaton determinize(Automaton NFA) {
 		Boolean pass = false;
 		LinkedList<String[]> mT = NFA.getTransitions();
 		int index = -1;
@@ -85,7 +80,15 @@ public class Automaton {
 				break;
 
 			String newState = "q" + NFA.getStates().size();
-			String[] previousStates = mT.get(index)[2].split(",");
+			
+			Set<String> previousStates = new HashSet<String>();
+			for (String s: mT.get(index)[2].split(",")) {
+				previousStates.add(s);
+			}
+			if (previousStates.size() == 1) {
+				mT.get(index)[2] = mT.get(index)[2].split(",")[0];
+				break;
+			}
 
 			// Update final states
 			Boolean isFinal = false;
@@ -151,13 +154,6 @@ public class Automaton {
 		}
 
 		return NFA;
-	}
-
-	public static Automaton determinize(Automaton NFA) {
-		Automaton temp = removeEpisilonTransitions(NFA);
-		temp = removeMultipleTranstitions(temp);
-
-		return temp;
 	}
 
 	public void possibleStrings(int maxLength, char[] chars, String curr) {
