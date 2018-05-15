@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.Font;
 import java.awt.Color;
+import java.util.*;
 
 public class Main {
 
@@ -47,6 +48,57 @@ public class Main {
 
     JButton btn_Det = new JButton("Determinizar AF");
     btn_Det.setBounds(50, topPosition, 195, 30);
+    btn_Det.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          JFrame GRsDetAFFrame = new JFrame();
+          GRsDetAFFrame.setSize(480, 390);
+          GRsDetAFFrame.setLayout(null);
+          GRsDetAFFrame.setVisible(true);
+          GRsDetAFFrame.setTitle("Determinizar AF");
+
+          JTextArea AF = new JTextArea("  |  | 0| 1|\n" +
+                                			 " >|q0|q1|q0|\n" +
+                                			 "* |q1|q0|q1|");
+          AF.setBounds(10, 10, 200, 250);
+          AF.setFont(new Font("monospaced", Font.PLAIN, 14));
+          GRsDetAFFrame.add(AF);
+
+          JTextArea G = new JTextArea();
+          G.setBounds(260, 10, 200, 250);
+          G.setFont(new Font("monospaced", Font.PLAIN, 14));
+          G.setEditable(false);
+          GRsDetAFFrame.add(G);
+
+          JButton loadAF = new JButton("Carregar AF");
+          loadAF.setBounds(10, 270, 200, 30);
+          loadAF.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              AF.setText(Utils.loadFromDisk());
+            }
+          });
+          GRsDetAFFrame.add(loadAF);
+
+          JButton saveG = new JButton("Salvar");
+          saveG.setBounds(260, 270, 200, 30);
+          saveG.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Utils.saveToDisk(G.getText());
+            }
+          });
+          GRsDetAFFrame.add(saveG);
+
+          JButton Determinize = new JButton("Determinizar");
+          Determinize.setBounds(10, 310, 200, 30);
+          Determinize.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Automaton NFA = Automaton.readAutomaton(AF.getText());
+
+              G.setText(Automaton.determinize(NFA).toString());
+            }
+          });
+          GRsDetAFFrame.add(Determinize);
+        }
+      });
 
     JButton btn_Min = new JButton("Minimizar AF");
     btn_Min.setBounds(255, topPosition, 195, 30);
@@ -429,19 +481,6 @@ public class Main {
     JFrame home = new JFrame();
 
     setUpInterface(home);
-
-    // Automaton M = new Automaton();
-    //
-    // M.addTransition("q0", " a", "q1,q2");
-    // M.addTransition("q0", " b", "__");
-    // M.addTransition("q1", " a", "q1");
-    // M.addTransition("q1", " b", "__");
-    // M.addTransition("q2", " a", "__");
-    // M.addTransition("q2", " b", "q3");
-    // M.addTransition("q3", " a", "q1");
-    // M.addTransition("q3", " b", "__");
-    //
-    // System.out.println(Automaton.determinize(M).toString());
   }
 
 }

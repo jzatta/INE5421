@@ -80,7 +80,7 @@ public class Automaton {
 				break;
 
 			String newState = "q" + NFA.getStates().size();
-			
+
 			Set<String> previousStates = new HashSet<String>();
 			for (String s: mT.get(index)[2].split(",")) {
 				previousStates.add(s);
@@ -242,6 +242,8 @@ public class Automaton {
 				for (String[] t:transitions) {
 					if (t[0].equals(s))
 						if (t[1].equals(r)) {
+							if (t[2].isEmpty())
+								t[2] = "__";
 							str += t[2] + "|";
 							break;
 						}
