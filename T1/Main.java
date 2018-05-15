@@ -314,6 +314,72 @@ public class Main {
 
     JButton btn_AFEnumeration = new JButton("Enumeração de Sentenças de Tamanho N (AF)");
     btn_AFEnumeration.setBounds(50, topPosition, 400, 30);
+    btn_AFEnumeration.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          JFrame AFEnumerationFrame = new JFrame();
+          AFEnumerationFrame.setSize(450, 390);
+          AFEnumerationFrame.setLayout(null);
+          AFEnumerationFrame.setVisible(true);
+          AFEnumerationFrame.setTitle("Enumeração de Sentenças de Tamanho N (AF)");
+
+          JTextArea AF = new JTextArea("  |  | 0| 1|\n" +
+                                			 " >|q0|q1|q0|\n" +
+                                			 "* |q1|q0|q1|");
+          AF.setBounds(10, 10, 200, 250);
+          AF.setFont(new Font("monospaced", Font.PLAIN, 14));
+          AFEnumerationFrame.add(AF);
+
+          SpinnerModel value = new SpinnerNumberModel(3, 1, 999, 1);
+          JSpinner amount = new JSpinner(value);
+          amount.setBounds(220, 40, 200, 30);
+          AFEnumerationFrame.add(amount);
+
+          JLabel SentenceLbl = new JLabel("Insira o tamanho:");
+          SentenceLbl.setBounds(220, 10, 200, 30);
+          SentenceLbl.setFont(new Font("monospaced", Font.PLAIN, 14));
+          AFEnumerationFrame.add(SentenceLbl);
+
+          JTextArea Result = new JTextArea("");
+          Result.setBounds(220, 100, 200, 200);
+          Result.setFont(new Font("monospaced", Font.BOLD, 14));
+          Result.setEditable(false);
+          AFEnumerationFrame.add(Result);
+
+          JButton loadAF = new JButton("Carregar AF");
+          loadAF.setBounds(10, 270, 200, 30);
+          loadAF.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              AF.setText(Utils.loadFromDisk());
+            }
+          });
+          AFEnumerationFrame.add(loadAF);
+
+          JButton Enumeration = new JButton("Enumerar");
+          Enumeration.setBounds(10, 310, 200, 30);
+          Enumeration.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Automaton M = Automaton.readAutomaton(AF.getText());
+
+              Result.setText("");
+
+              for (String s: M.getEnumN((int) amount.getValue())) {
+                Result.append(s);
+                Result.append("\n");
+              }
+            }
+          });
+          AFEnumerationFrame.add(Enumeration);
+
+          JButton save = new JButton("Salvar");
+          save.setBounds(220, 310, 200, 30);
+          save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Utils.saveToDisk(Result.getText());
+            }
+          });
+          AFEnumerationFrame.add(save);
+        }
+      });
     topPosition += 40;
 
     frame.add(btn_newGrammar);

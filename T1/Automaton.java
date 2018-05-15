@@ -7,6 +7,7 @@ public class Automaton {
 	LinkedList<String[]> transitions = new LinkedList<String[]>();
 	LinkedList<String> states = new LinkedList<String>();
 	LinkedList<String> symbols = new LinkedList<String>();
+	LinkedList<String> enumN = new LinkedList<String>();
 
 	String initialState = "";
 	LinkedList<String> finalStates = new LinkedList<String>();
@@ -56,6 +57,38 @@ public class Automaton {
 		transition[2] = Y;
 
 		transitions.addLast(transition);
+	}
+
+	public void possibleStrings(int maxLength, char[] chars, String curr) {
+		if (curr.length() == maxLength)
+			enumN.addLast(curr);
+		else {
+			for (char c: chars) {
+				String oldCurr = curr;
+				curr += c;
+				possibleStrings(maxLength, chars, curr);
+				curr = oldCurr;
+			}
+		}
+	}
+
+	public LinkedList<String> getEnumN(int n) {
+		enumN.clear();
+
+		char[] temp = new char[symbols.size()];
+		for (int i = 0; i < symbols.size(); i++)
+			temp[i] = symbols.get(i).toCharArray()[0];
+
+		possibleStrings(n, temp, "");
+
+		LinkedList<String> sentences = new LinkedList<String>();
+
+		for (String s: enumN) {
+			if (recognize(s))
+				sentences.addLast(s);
+		}
+
+		return sentences;
 	}
 
 	public Boolean recognize(String sentence) {
