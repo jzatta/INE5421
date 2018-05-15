@@ -45,8 +45,11 @@ public class Main {
     btn_AfToGr.setBounds(50, topPosition, 400, 30);
     topPosition += 40;
 
-    JButton btn_DetMin = new JButton("Determinizar e Minimizar AF");
-    btn_DetMin.setBounds(50, topPosition, 400, 30);
+    JButton btn_Det = new JButton("Determinizar AF");
+    btn_Det.setBounds(50, topPosition, 195, 30);
+
+    JButton btn_Min = new JButton("Minimizar AF");
+    btn_Min.setBounds(255, topPosition, 195, 30);
     topPosition += 40;
 
     JButton btn_LRsIntersection = new JButton("Intersecção de LRs -> AF");
@@ -388,7 +391,8 @@ public class Main {
     frame.add(btn_DeSimone);
     frame.add(btn_GrToAf);
     frame.add(btn_AfToGr);
-    frame.add(btn_DetMin);
+    frame.add(btn_Det);
+    frame.add(btn_Min);
     frame.add(btn_LRsIntersection);
     frame.add(btn_LRsDiference);
     frame.add(btn_LRsReverse);

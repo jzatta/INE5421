@@ -14,7 +14,7 @@ public class Utils {
       char buffer[] = new char[s.length()];
       s.getChars(0, s.length(), buffer, 0);
 
-      FileWriter f = new FileWriter(file + ".txt");
+      FileWriter f = new FileWriter(file);
 
       for (int i = 0; i < buffer.length; i++) {
         f.write(buffer[i]);
