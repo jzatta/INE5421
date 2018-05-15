@@ -429,6 +429,19 @@ public class Main {
     JFrame home = new JFrame();
 
     setUpInterface(home);
+
+    // Automaton M = new Automaton();
+    //
+    // M.addTransition("q0", " a", "q1,q2");
+    // M.addTransition("q0", " b", "__");
+    // M.addTransition("q1", " a", "q1");
+    // M.addTransition("q1", " b", "__");
+    // M.addTransition("q2", " a", "__");
+    // M.addTransition("q2", " b", "q3");
+    // M.addTransition("q3", " a", "q1");
+    // M.addTransition("q3", " b", "__");
+    //
+    // System.out.println(Automaton.determinize(M).toString());
   }
 
 }

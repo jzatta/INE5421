@@ -59,6 +59,64 @@ public class Automaton {
 		transitions.addLast(transition);
 	}
 
+	private static Automaton removeEpisilonTransitions(Automaton NFA) {
+
+		return NFA;
+	}
+
+	private static Automaton removeMultipleTranstitions(Automaton NFA) {
+		Boolean pass = false;
+		LinkedList<String[]> mT = NFA.getTransitions();
+		int index = -1;
+
+		while (!pass) {
+			pass = true;
+			index = -1;
+
+			for (String[] t: mT) {
+				index++;
+				if (t[2].contains(",")) {
+					pass = false;
+					break;
+				}
+			}
+
+			if (pass)
+				break;
+
+			String newState = "q" + NFA.getStates().size();
+			String[] previousStates = mT.get(index)[2].split(",");
+
+			mT.get(index)[2] = newState;
+
+			for (String s: NFA.getSymbols()) {
+				String transition = "";
+				for (String p: previousStates) {
+					for (String[] t: mT) {
+						if (t[0].equals(p) && t[1].equals(s)) {
+							if (!transition.isEmpty() && !t[2].equals("__"))
+								transition += ",";
+
+							if (!t[2].equals("__"))
+								transition += t[2];
+						}
+					}
+				}
+
+				NFA.addTransition(newState, s, transition);
+			}
+		}
+
+		return NFA;
+	}
+
+	public static Automaton determinize(Automaton NFA) {
+		Automaton temp = removeEpisilonTransitions(NFA);
+		temp = removeMultipleTranstitions(temp);
+
+		return temp;
+	}
+
 	public void possibleStrings(int maxLength, char[] chars, String curr) {
 		if (curr.length() == maxLength)
 			enumN.addLast(curr);
