@@ -99,8 +99,28 @@ public class Automaton {
 
 							if (!t[2].equals("__"))
 								transition += t[2];
+
+							break;
 						}
 					}
+				}
+
+				// Remove unreachable states
+				String[] toRemove = new String[NFA.getStates().size()];
+				index = -1;
+				for (String p: previousStates) {
+					index++;
+					Boolean flag = true;
+					for (String[] t: mT) {
+						if (t[2].equals(p)) {
+							flag = false;
+						}
+					}
+					if (flag)
+						toRemove[index] = p;
+				}
+				for (String s2: toRemove) {
+					NFA.getStates().remove(s2);
 				}
 
 				NFA.addTransition(newState, s, transition);
