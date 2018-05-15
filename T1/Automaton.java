@@ -107,6 +107,18 @@ public class Automaton {
 			}
 		}
 
+		// Remove non-deterministic states
+		String[] toRemove = new String[NFA.getStates().size()];
+		index = -1;
+		for (String s: NFA.getStates()) {
+			index++;
+			if (s.contains(","))
+				toRemove[index] = s;
+		}
+		for (String s: toRemove) {
+			NFA.getStates().remove(s);
+		}
+
 		return NFA;
 	}
 
