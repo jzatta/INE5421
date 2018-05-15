@@ -47,7 +47,7 @@ public class Automaton {
 
 		if (!states.contains(X))
 			states.addLast(X);
-		if (!states.contains(Y))
+		if (!states.contains(Y) && !Y.equals("__"))
 			states.addLast(Y);
 		if (!symbols.contains(x))
 			symbols.addLast(x);
@@ -235,7 +235,11 @@ public class Automaton {
 
 		String[] r = lines[0].split("\\|");
 		for (int i = 2; i < r.length; i++) {
-			symbols.addLast(String.valueOf(r[i].charAt(1)));
+			try {
+				symbols.addLast(String.valueOf(r[i].charAt(1)));
+			} catch (StringIndexOutOfBoundsException e) {
+				symbols.addLast(String.valueOf(r[i].charAt(0)));
+			}
 		}
 
 		for (int i = 1; i < lines.length; i++) {
