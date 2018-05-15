@@ -87,6 +87,17 @@ public class Automaton {
 			String newState = "q" + NFA.getStates().size();
 			String[] previousStates = mT.get(index)[2].split(",");
 
+			// Update final states
+			Boolean isFinal = false;
+			for (String p: previousStates) {
+				if (NFA.getFinalStates().contains(p)) {
+					isFinal = true;
+					break;
+				}
+			}
+			if (isFinal)
+				NFA.getFinalStates().addLast(newState);
+
 			mT.get(index)[2] = newState;
 
 			for (String s: NFA.getSymbols()) {
