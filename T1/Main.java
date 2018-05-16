@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.Font;
 import java.awt.Color;
-import java.util.*;
 
 public class Main {
 
@@ -13,7 +12,7 @@ public class Main {
     btn_newGrammar.setBounds(50, topPosition, 130, 30);
     btn_newGrammar.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        EditInterface eI = new EditInterface(EditInterface.Type.GRAMMAR);
+        new EditInterface(EditInterface.Type.GRAMMAR);
       }
     });
 
@@ -21,7 +20,7 @@ public class Main {
     btn_newAutomaton.setBounds(185, topPosition, 130, 30);
     btn_newAutomaton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        EditInterface eI = new EditInterface(EditInterface.Type.AUTOMATON);
+        new EditInterface(EditInterface.Type.AUTOMATON);
       }
     });
 
@@ -29,7 +28,7 @@ public class Main {
     btn_newRegex.setBounds(320, topPosition, 130, 30);
     btn_newRegex.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        EditInterface eI = new EditInterface(EditInterface.Type.REGEX);
+        new EditInterface(EditInterface.Type.REGEX);
       }
     });
     topPosition += 40;
@@ -81,9 +80,14 @@ public class Main {
           toNFA.setBounds(10, 310, 200, 30);
           toNFA.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              Grammar Grammar1 = Grammar.readGrammar(G.getText());
-
-              AF.setText(Grammar.toNFA(Grammar1).toString());
+            	Grammar Grammar1;
+				try {
+					Grammar1 = Grammar.readGrammar(G.getText());
+					
+					AF.setText(Grammar.toNFA(Grammar1).toString());
+				} catch (MyException e1) {
+					JOptionPane.showMessageDialog(GRtoAFFrame, e1.getMessage(), "Gramática Inválida", JOptionPane.ERROR_MESSAGE);
+				}
             }
           });
           GRtoAFFrame.add(toNFA);
@@ -222,10 +226,14 @@ public class Main {
         Union.setBounds(10, 310, 410, 30);
         Union.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Grammar Grammar1 = Grammar.readGrammar(G1.getText());
-            Grammar Grammar2 = Grammar.readGrammar(G2.getText());
-
-            G.setText(Utils.grammarUnion(Grammar1, Grammar2).toString());
+			try {
+				Grammar Grammar1 = Grammar.readGrammar(G1.getText());
+				Grammar Grammar2 = Grammar.readGrammar(G2.getText());
+				
+				G.setText(Utils.grammarUnion(Grammar1, Grammar2).toString());
+			} catch (MyException e1) {
+				JOptionPane.showMessageDialog(GRsUnionFrame, e1.getMessage(), "Gramática Inválida", JOptionPane.ERROR_MESSAGE);
+			}
           }
         });
         GRsUnionFrame.add(Union);
@@ -290,10 +298,14 @@ public class Main {
           Concatenation.setBounds(10, 310, 410, 30);
           Concatenation.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              Grammar Grammar1 = Grammar.readGrammar(G1.getText());
-              Grammar Grammar2 = Grammar.readGrammar(G2.getText());
-
-              G.setText(Utils.grammarConcatenation(Grammar1, Grammar2).toString());
+			try {
+				Grammar Grammar1 = Grammar.readGrammar(G1.getText());
+				Grammar Grammar2 = Grammar.readGrammar(G2.getText());
+				
+				G.setText(Utils.grammarConcatenation(Grammar1, Grammar2).toString());
+			} catch (MyException e1) {
+				JOptionPane.showMessageDialog(GRsConcatenationFrame, e1.getMessage(), "Gramática Inválida", JOptionPane.ERROR_MESSAGE);
+			}
             }
           });
           GRsConcatenationFrame.add(Concatenation);
@@ -344,9 +356,13 @@ public class Main {
           KleeneClosure.setBounds(10, 310, 200, 30);
           KleeneClosure.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              Grammar Grammar1 = Grammar.readGrammar(G1.getText());
-
-              G.setText(Utils.kleeneClosure(Grammar1).toString());
+			try {
+				Grammar Grammar1 = Grammar.readGrammar(G1.getText());
+				
+				G.setText(Utils.kleeneClosure(Grammar1).toString());
+			} catch (MyException e1) {
+				JOptionPane.showMessageDialog(GRsClosureFrame, e1.getMessage(), "Gramática Inválida", JOptionPane.ERROR_MESSAGE);
+			}
             }
           });
           GRsClosureFrame.add(KleeneClosure);

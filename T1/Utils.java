@@ -1,7 +1,6 @@
 import java.util.*;
 import java.io.*;
 import javax.swing.*;
-import java.nio.charset.Charset;
 
 public class Utils {
 
@@ -28,8 +27,6 @@ public class Utils {
     JFileChooser open = new JFileChooser();
     open.showOpenDialog(null);
     File file = new File(open.getSelectedFile().getAbsolutePath());
-
-    Charset charset = Charset.forName("UTF-8");
 
     String ret = "";
 
