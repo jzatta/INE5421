@@ -58,6 +58,66 @@ public class Automaton {
 
 		transitions.addLast(transition);
 	}
+	
+	public static Grammar toGrammar(Automaton M) {
+		LinkedList<String[]> transitions = M.getTransitions();
+		Grammar G = new Grammar();
+		
+//		int index = 0;
+//		int count = 0;
+//		char[] alphabet = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'W', 'Y', 'Z'};
+//		
+//		for (String state: M.getStates()) {
+//			if (index == alphabet.length) {
+//				index = 0;
+//				count++;
+//			}
+//			
+//			String quotes = "";
+//			for (int c = 0; c < count; c++) {
+//				quotes += "'";
+//			}
+//			
+//			for (int i = 0; i < transitions.size(); i++) {
+//				System.out.println(transitions.get(i)[0] + "," + transitions.get(i)[1] + "," + transitions.get(i)[2]);
+//				if (transitions.get(i)[0].equals(state)) {
+//					transitions.get(i)[0] = String.valueOf(alphabet[index]) + quotes;
+//				}
+//				if (transitions.get(i)[2].equals(state)) {
+//					transitions.get(i)[2] = String.valueOf(alphabet[index]) + quotes;
+//				}
+//				System.out.println(transitions.get(i)[0] + "," + transitions.get(i)[1] + "," + transitions.get(i)[2]);
+//			}
+//			
+//			index++;
+//		}
+		
+		for (String[] t: transitions) {
+			if (!t[2].equals("__")) {
+				Boolean flag = false;
+				String Y = t[2];
+				for (String[] t2: transitions) {
+					if (t2[0].equals(Y) && !t2[2].equals("__")) {
+						flag = true;
+						break;
+					}
+				}
+				
+				if (!M.getFinalStates().contains(t[2])) {
+					G.addProduction(t[0], t[1], t[2]);	
+				}
+				if (M.getFinalStates().contains(t[2]) && flag) {
+					G.addProduction(t[0], t[1], t[2]);	
+					G.addProduction(t[0], t[1]);
+				}
+				if (M.getFinalStates().contains(t[2]) && !flag) {
+					G.addProduction(t[0], t[1]);	
+				}
+			}
+		}
+		
+		return G;
+	}
 
 	public static Automaton determinize(Automaton NFA) {
 		Boolean pass = false;

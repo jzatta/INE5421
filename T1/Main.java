@@ -97,6 +97,57 @@ public class Main {
 
     JButton btn_AfToGr = new JButton("Transformar AF em GR");
     btn_AfToGr.setBounds(50, topPosition, 400, 30);
+    btn_AfToGr.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          JFrame AFtoGRFrame = new JFrame();
+          AFtoGRFrame.setSize(480, 390);
+          AFtoGRFrame.setLayout(null);
+          AFtoGRFrame.setVisible(true);
+          AFtoGRFrame.setTitle("Transformar AF em GR");
+
+          JTextArea AF = new JTextArea("  |  | 0| 1|\n" +
+						     		   " >|q0|q1|q0|\n" +
+						     		   "* |q1|q0|q1|");
+          AF.setBounds(10, 10, 200, 250);
+          AF.setFont(new Font("monospaced", Font.PLAIN, 14));
+          AFtoGRFrame.add(AF);
+
+          JTextArea G = new JTextArea();
+          G.setBounds(260, 10, 200, 250);
+          G.setFont(new Font("monospaced", Font.PLAIN, 14));
+          G.setEditable(false);
+          AFtoGRFrame.add(G);
+
+          JButton loadAF = new JButton("Carregar AF");
+          loadAF.setBounds(10, 270, 200, 30);
+          loadAF.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              AF.setText(Utils.loadFromDisk());
+            }
+          });
+          AFtoGRFrame.add(loadAF);
+
+          JButton saveG = new JButton("Salvar");
+          saveG.setBounds(260, 270, 200, 30);
+          saveG.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Utils.saveToDisk(G.getText());
+            }
+          });
+          AFtoGRFrame.add(saveG);
+
+          JButton toGR = new JButton("Converter para GR");
+          toGR.setBounds(10, 310, 200, 30);
+          toGR.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	Automaton M = Automaton.readAutomaton(AF.getText());
+            	
+            	G.setText(Automaton.toGrammar(M).toString());
+            }
+          });
+          AFtoGRFrame.add(toGR);
+        }
+      });
     topPosition += 40;
 
     JButton btn_Det = new JButton("Determinizar AF");
