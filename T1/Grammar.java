@@ -137,9 +137,71 @@ public class Grammar {
     return str;
   }
 
-  public static Grammar readGrammar(String s) {
+  private static Boolean validateGrammar(String s) throws MyException {
+	  String[] lines = s.split(System.getProperty("line.separator"));
+
+	  for (int i = 1; i < lines.length; i++) {
+		  if (lines[i].contains(Grammar.epsilon)) {
+			  throw new MyException("Alguma produção não-inicial possui &");
+		  }
+	  }
+
+	  if (lines[0].contains(Grammar.epsilon)) {
+		  String[] sub = lines[0].split(">")[1].split("\\|");
+		  for (String s2: sub) {
+			  if (s2.contains(String.valueOf(lines[0].charAt(0)))) {
+				  throw new MyException("Produção inicial só pode usar & para gerar a sentença vazia");
+			  }
+		  }
+	  }
+
+	  for (String l: lines) {
+		  if (l.length() < 4) {
+			  throw new MyException("Não pode existir produções vazias do tipo S->...");
+		  }
+
+		  String[] sub = l.split(">")[1].split("\\|");
+
+
+		  for (String s2: sub) {
+			  if (s2.length() > 2) {
+				  throw new MyException("Produções só podem ter tamanho 1 ou 2. (Ex: S->aS ou S->a)");
+			  }
+
+			  if (!String.valueOf(s2.charAt(0)).equals(String.valueOf(s2.charAt(0)).toLowerCase())) {
+				  throw new MyException("Produções precisam conter algum símbolo terminal");
+			  }
+
+			  if (s2.length() == 2) {
+				  if (!String.valueOf(s2.charAt(1)).equals(String.valueOf(s2.charAt(1)).toUpperCase())) {
+					  throw new MyException("Produções não podem ter dois símbolos terminais seguidos");
+				  } else {
+					  Boolean flag = false;
+					  for (String s3: lines) {
+						  if (String.valueOf(s3.charAt(0)).equals(String.valueOf(s2.charAt(1)))) {
+							  flag = true;
+						  }
+					  }
+					  if (!flag) {
+						  throw new MyException("Todas as produções precisam estar definidas");
+					  }
+				  }
+			  }
+		  }
+	  }
+
+	  return true;
+  }
+
+  public static Grammar readGrammar(String s) throws MyException {
     String[] lines = s.split(System.getProperty("line.separator"));
     LinkedList<String> prodList = new LinkedList<String>();
+
+    try {
+    	validateGrammar(s);
+    } catch (MyException e1) {
+    	throw e1;
+    }
 
     for (String l:lines) {
       String S = String.valueOf(l.charAt(0));
