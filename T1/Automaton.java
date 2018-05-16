@@ -62,6 +62,27 @@ public class Automaton {
 	public static Automaton determinize(Automaton NFA) {
 		Boolean pass = false;
 		LinkedList<String[]> mT = NFA.getTransitions();
+		LinkedList<String[]> originalT = new LinkedList<String[]>();
+
+		String[] aa = new String[3];
+		aa[0] = "q0"; aa[1] = "0"; aa[2] = "q1";
+		originalT.addLast(aa);
+		String[] bb = new String[3];
+		bb[0] = "q0"; bb[1] = "1"; bb[2] = "q0";
+		originalT.addLast(bb);
+		String[] cc = new String[3];
+		cc[0] = "q1"; cc[1] = "0"; cc[2] = "q2";
+		originalT.addLast(cc);
+		String[] dd = new String[3];
+		dd[0] = "q1"; dd[1] = "1"; dd[2] = "q1";
+		originalT.addLast(dd);
+		String[] ee = new String[3];
+		ee[0] = "q2"; ee[1] = "0"; ee[2] = "q1";
+		originalT.addLast(ee);
+		String[] ff = new String[3];
+		ff[0] = "q2"; ff[1] = "1"; ff[2] = "q0";
+		originalT.addLast(ff);
+
 		int index = -1;
 
 		while (!pass) {
@@ -79,65 +100,91 @@ public class Automaton {
 			if (pass)
 				break;
 
-			String newState = "q" + NFA.getStates().size();
+//			String newState = "q" + NFA.getStates().size();
 
 			Set<String> previousStates = new HashSet<String>();
 			for (String s: mT.get(index)[2].split(",")) {
 				previousStates.add(s);
 			}
-			if (previousStates.size() == 1) {
+			if (previousStates.size() == 1)
 				mT.get(index)[2] = mT.get(index)[2].split(",")[0];
-				break;
-			}
+			else {
+				String newState = "";
+				for (String p: previousStates)
+					newState += p;
 
-			// Update final states
-			Boolean isFinal = false;
-			for (String p: previousStates) {
-				if (NFA.getFinalStates().contains(p)) {
-					isFinal = true;
-					break;
-				}
-			}
-			if (isFinal)
-				NFA.getFinalStates().addLast(newState);
-
-			mT.get(index)[2] = newState;
-
-			for (String s: NFA.getSymbols()) {
-				String transition = "";
+				// Update final states
+				Boolean isFinal = false;
 				for (String p: previousStates) {
-					for (String[] t: mT) {
-						if (t[0].equals(p) && t[1].equals(s)) {
-							if (!transition.isEmpty() && !t[2].equals("__"))
-								transition += ",";
-
-							if (!t[2].equals("__"))
-								transition += t[2];
-
-							break;
-						}
+					if (NFA.getFinalStates().contains(p)) {
+						isFinal = true;
+						break;
 					}
 				}
+				if (isFinal)
+					NFA.getFinalStates().addLast(newState);
 
-				// Remove unreachable states
-				String[] toRemove = new String[NFA.getStates().size()];
-				index = -1;
-				for (String p: previousStates) {
-					index++;
-					Boolean flag = true;
-					for (String[] t: mT) {
-						if (t[2].equals(p)) {
-							flag = false;
+				mT.get(index)[2] = newState;
+
+				for (String s: NFA.getSymbols()) {
+					Set<String> transitionSet = new HashSet<String>();
+					String transition = "";
+
+					for (String p: previousStates) {
+						for (String[] t: originalT) {
+							if (t[0].equals(p) && t[1].equals(s)) {
+								if (!t[2].equals("__")) {
+									transitionSet.add(t[2]);
+								}
+
+								break;
+							}
 						}
 					}
-					if (flag)
-						toRemove[index] = p;
-				}
-				for (String s2: toRemove) {
-					NFA.getStates().remove(s2);
-				}
 
-				NFA.addTransition(newState, s, transition);
+					// Remove unreachable states
+					String[] toRemove = new String[NFA.getStates().size()];
+					index = -1;
+					for (String p: previousStates) {
+						index++;
+						Boolean flag = true;
+						for (String[] t: mT) {
+							if (t[2].equals(p)) {
+								flag = false;
+								break;
+							}
+						}
+						if (flag)
+							toRemove[index] = p;
+					}
+					for (String s2: toRemove) {
+						NFA.getStates().remove(s2);
+					}
+
+					if (transitionSet.containsAll(previousStates))
+						NFA.addTransition(newState, s, newState);
+					else {
+						transition = transitionSet.iterator().next();
+						Boolean flag = false;
+						if (transitionSet.size() > 1)
+							for (String t: transitionSet) {
+								if (flag)
+									transition += "," + t;
+								else
+									flag = true;
+							}
+
+						for (String state: NFA.getStates()) {
+							if (state.equals(transition.replace(",", ""))) {
+								transition = transition.replace(",", "");
+								break;
+							}
+						}
+
+						NFA.addTransition(newState, s, transition);
+					}
+
+				}
 			}
 		}
 
