@@ -40,6 +40,55 @@ public class Main {
 
     JButton btn_GrToAf = new JButton("Transformar GR em AF");
     btn_GrToAf.setBounds(50, topPosition, 400, 30);
+    btn_GrToAf.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          JFrame GRtoAFFrame = new JFrame();
+          GRtoAFFrame.setSize(480, 390);
+          GRtoAFFrame.setLayout(null);
+          GRtoAFFrame.setVisible(true);
+          GRtoAFFrame.setTitle("Transformar GR em AF");
+
+          JTextArea G = new JTextArea("S->aS|a");
+          G.setBounds(10, 10, 200, 250);
+          G.setFont(new Font("monospaced", Font.PLAIN, 14));
+          GRtoAFFrame.add(G);
+
+          JTextArea AF = new JTextArea();
+          AF.setBounds(260, 10, 200, 250);
+          AF.setFont(new Font("monospaced", Font.PLAIN, 14));
+          AF.setEditable(false);
+          GRtoAFFrame.add(AF);
+
+          JButton loadG = new JButton("Carregar G");
+          loadG.setBounds(10, 270, 200, 30);
+          loadG.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              G.setText(Utils.loadFromDisk());
+            }
+          });
+          GRtoAFFrame.add(loadG);
+
+          JButton saveAF = new JButton("Salvar");
+          saveAF.setBounds(260, 270, 200, 30);
+          saveAF.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Utils.saveToDisk(AF.getText());
+            }
+          });
+          GRtoAFFrame.add(saveAF);
+
+          JButton toNFA = new JButton("Converter para AF");
+          toNFA.setBounds(10, 310, 200, 30);
+          toNFA.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Grammar Grammar1 = Grammar.readGrammar(G.getText());
+
+              AF.setText(Grammar.toNFA(Grammar1).toString());
+            }
+          });
+          GRtoAFFrame.add(toNFA);
+        }
+      });
     topPosition += 40;
 
     JButton btn_AfToGr = new JButton("Transformar AF em GR");
