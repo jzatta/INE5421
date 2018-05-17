@@ -74,8 +74,8 @@ public class Automaton {
 					}
 				}
 
-				int index0 = Integer.valueOf(String.valueOf(t[0].charAt(1)));
-				int index2 = Integer.valueOf(String.valueOf(t[2].charAt(1)));
+				int index0 = Integer.valueOf(t[0].substring(1));
+				int index2 = Integer.valueOf(t[2].substring(1));
 
 				if (!M.getFinalStates().contains(t[2])) {
 					t[0] = renameProduction(index0);
@@ -102,7 +102,13 @@ public class Automaton {
 	private static String renameProduction(int index) {
 		char[] alphabet = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'W', 'Y', 'Z'};
 
-		return String.valueOf(alphabet[index]);
+		int quotesAmount = index / alphabet.length;
+
+		String ret = String.valueOf(alphabet[index - (alphabet.length * quotesAmount)]);
+		for (int i = 0; i < quotesAmount; i++)
+			ret += "'";
+
+		return ret;
 	}
 
 	public static Automaton determinize(Automaton NFA) {
