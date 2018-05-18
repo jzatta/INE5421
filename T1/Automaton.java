@@ -173,6 +173,9 @@ public class Automaton {
 					}
 				}
 
+				if (transition.isEmpty())
+					break;
+
 				Set<String> unique = new HashSet<String>();
 				String[] t = transition.replace(",", "").split("q");
 				for (int i = 1; i < t.length; i++) {
