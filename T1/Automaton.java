@@ -122,6 +122,16 @@ public class Automaton {
 		return flag;
 	}
 
+	private String transitionTo(String stateFrom, String symbol) {
+		for (String[] t: transitions) {
+			if (t[0].equals(stateFrom) && t[1].equals(symbol)) {
+				return t[2];
+			}
+		}
+
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	private static Automaton removeUnreachableStates(Automaton DFA) {
 		LinkedList<String> unreachableStates = (LinkedList<String>) DFA.getStates().clone();
@@ -203,6 +213,106 @@ public class Automaton {
 	}
 
 	private static Automaton removeEquivalentStates(Automaton DFA) {
+		LinkedList<String[]> pairs = new LinkedList<String[]>();
+		LinkedList<String[]> analysis = new LinkedList<String[]>();
+
+		int index = 1;
+		for (int i = 0; i < DFA.getStates().size(); i++) {
+			for (int j = index; j < DFA.getStates().size(); j++) {
+				String[] tmp = {DFA.getStates().get(i), DFA.getStates().get(j), "0"};
+				pairs.addLast(tmp);
+			}
+			index++;
+		}
+
+		for (String[] P: pairs) {
+			if (DFA.getFinalStates().contains(P[0]) ^ DFA.getFinalStates().contains(P[1])) {
+				P[2] = "1";
+			}
+		}
+
+		for (String[] P: pairs) {
+			for (String s: DFA.getSymbols()) {
+				String t1 = DFA.transitionTo(P[0], s);
+				String t2 = DFA.transitionTo(P[1], s);
+
+				if (t1.equals(t2)) {
+					break;
+				} else {
+					String[] pair = null;
+					for (String[] p: pairs) {
+						if (p[0].equals(t1) && p[1].equals(t2) || p[0].equals(t2) && p[1].equals(t1)) {
+							pair = p;
+							break;
+						}
+					}
+
+					if (pair[2].equals("0")) {
+						String[] tmp = {P[0], P[1], t1, t2};
+						analysis.addLast(tmp);
+					} else {
+						P[2] = "1";
+						for (String[] p: analysis) {
+							if (p[0].equals(P[0]) && p[1].equals(P[1])) {
+								for (String[] p2: pairs) {
+									if (p2[0].equals(p[2]) && p2[1].equals(p[3])) {
+										p2[2] = "1";
+									}
+								}
+							}
+						}
+						break;
+					}
+				}
+
+
+			}
+		}
+
+		analysis.clear();
+		for (String[] P: pairs) {
+			if (P[2].equals("0")) {
+				for (String s: DFA.getSymbols()) {
+					String t1 = DFA.transitionTo(P[0], s);
+					String t2 = DFA.transitionTo(P[1], s);
+
+					if (!t1.equals(t2)) {
+						for (String[] p: pairs) {
+							if (p[0].equals(t1) && p[1].equals(t2) || p[0].equals(t2) && p[1].equals(t1)) {
+								if (p[2].equals("0")) {
+									String[] tmp = {t1, t2, P[0], P[1]};
+									analysis.addLast(tmp);
+								} else {
+									P[2] = "1";
+									for (String[] p2: analysis) {
+										if (p2[0].equals(P[0]) && p2[1].equals(P[1]) || p2[0].equals(P[1]) && p2[1].equals(P[0])) {
+											for (String[] p3: pairs) {
+												if (p3[0].equals(p2[2]) && p3[1].equals(p2[3]) || p3[0].equals(p2[3]) && p3[1].equals(p2[2])) {
+													p3[2] = "1";
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		for (String[] P: pairs) {
+			if (P[2].equals("0")) {
+
+				for (String[] t: DFA.getTransitions()) {
+					if (t[2].equals(P[1])) {
+						t[2] = P[0];
+					}
+				}
+
+				DFA.getStates().remove(P[1]);
+			}
+		}
 
 		return DFA;
 	}
