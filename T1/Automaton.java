@@ -158,7 +158,46 @@ public class Automaton {
 		return DFA;
 	}
 
+	@SuppressWarnings("unchecked")
 	private static Automaton removeDeadStates(Automaton DFA) {
+		LinkedList<String> deadStates = (LinkedList<String>) DFA.getStates().clone();
+		Set<String> aliveStates = new HashSet<String>();
+		for (String s: DFA.getFinalStates()) {
+			deadStates.remove(s);
+			aliveStates.add(s);
+		}
+
+		LinkedList<String> toAdd = new LinkedList<String>();
+
+		Boolean flag = false;
+		while (!flag) {
+			flag = true;
+			toAdd.clear();
+
+			for (String alive: aliveStates) {
+				for (String dead: deadStates) {
+					if (DFA.existTransition(dead, alive)) {
+						toAdd.addLast(dead);
+						flag = false;
+					}
+				}
+			}
+
+			for (String s: toAdd) {
+				aliveStates.add(s);
+				deadStates.remove(s);
+			}
+		}
+
+		for (String d: deadStates) {
+			DFA.getStates().remove(d);
+
+			for (String[] t: DFA.getTransitions()) {
+				if (t[2].equals(d)) {
+					t[2] = "__";
+				}
+			}
+		}
 
 		return DFA;
 	}
