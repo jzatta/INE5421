@@ -111,6 +111,29 @@ public class Automaton {
 		return ret;
 	}
 
+	private static Automaton removeUnreachableStates(Automaton DFA) {
+
+		return DFA;
+	}
+
+	private static Automaton removeDeadStates(Automaton DFA) {
+
+		return DFA;
+	}
+
+	private static Automaton removeEquivalentStates(Automaton DFA) {
+
+		return DFA;
+	}
+
+	public static Automaton minimize(Automaton DFA) {
+		DFA = removeUnreachableStates(DFA);
+		DFA = removeDeadStates(DFA);
+		DFA = removeEquivalentStates(DFA);
+
+		return DFA;
+	}
+
 	private static Automaton _determinize(Automaton NFA) {
 		Boolean change = false;
 		LinkedList<String[]> transitions = NFA.getTransitions();

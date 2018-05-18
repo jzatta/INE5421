@@ -207,6 +207,58 @@ public class Main {
 
     JButton btn_Min = new JButton("Minimizar AF");
     btn_Min.setBounds(255, topPosition, 195, 30);
+    btn_Min.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          JFrame GRsMinAFFrame = new JFrame();
+          GRsMinAFFrame.setSize(480, 390);
+          GRsMinAFFrame.setLayout(null);
+          GRsMinAFFrame.setVisible(true);
+          GRsMinAFFrame.setTitle("Minimizar AF");
+
+          JTextArea AF = new JTextArea("  |  | 0| 1|\n" +
+                                			 " >|q0|q1|q0|\n" +
+                                			 "* |q1|q0|q1|");
+          AF.setBounds(10, 10, 200, 250);
+          AF.setFont(new Font("monospaced", Font.PLAIN, 14));
+          GRsMinAFFrame.add(AF);
+
+          JTextArea G = new JTextArea();
+          G.setBounds(260, 10, 200, 250);
+          G.setFont(new Font("monospaced", Font.PLAIN, 14));
+          G.setEditable(false);
+          GRsMinAFFrame.add(G);
+
+          JButton loadAF = new JButton("Carregar AF");
+          loadAF.setBounds(10, 270, 200, 30);
+          loadAF.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              AF.setText(Utils.loadFromDisk());
+            }
+          });
+          GRsMinAFFrame.add(loadAF);
+
+          JButton saveG = new JButton("Salvar");
+          saveG.setBounds(260, 270, 200, 30);
+          saveG.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Utils.saveToDisk(G.getText());
+            }
+          });
+          GRsMinAFFrame.add(saveG);
+
+          JButton Minimize = new JButton("Minimizar");
+          Minimize.setBounds(10, 310, 200, 30);
+          Minimize.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Automaton NFA = Automaton.readAutomaton(AF.getText());
+              NFA = Automaton.determinize(NFA);
+
+              G.setText(Automaton.minimize(NFA).toString());
+            }
+          });
+          GRsMinAFFrame.add(Minimize);
+        }
+      });
     topPosition += 40;
 
     JButton btn_LRsIntersection = new JButton("Intersecção de LRs -> AF");
