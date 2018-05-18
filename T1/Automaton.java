@@ -111,146 +111,153 @@ public class Automaton {
 		return ret;
 	}
 
-	public static Automaton determinize(Automaton NFA) {
-		Boolean pass = false;
-		LinkedList<String[]> mT = NFA.getTransitions();
-		LinkedList<String[]> originalT = new LinkedList<String[]>();
+	private static Automaton _determinize(Automaton NFA) {
+		Boolean change = false;
+		LinkedList<String[]> transitions = NFA.getTransitions();
+		Set<String> newStatesList = new HashSet<String>();
 
-		String[] aa = new String[3];
-		aa[0] = "q0"; aa[1] = "0"; aa[2] = "q1";
-		originalT.addLast(aa);
-		String[] bb = new String[3];
-		bb[0] = "q0"; bb[1] = "1"; bb[2] = "q0";
-		originalT.addLast(bb);
-		String[] cc = new String[3];
-		cc[0] = "q1"; cc[1] = "0"; cc[2] = "q2";
-		originalT.addLast(cc);
-		String[] dd = new String[3];
-		dd[0] = "q1"; dd[1] = "1"; dd[2] = "q1";
-		originalT.addLast(dd);
-		String[] ee = new String[3];
-		ee[0] = "q2"; ee[1] = "0"; ee[2] = "q1";
-		originalT.addLast(ee);
-		String[] ff = new String[3];
-		ff[0] = "q2"; ff[1] = "1"; ff[2] = "q0";
-		originalT.addLast(ff);
+		for (String[] t: transitions) {
+			if (t[2].contains(",")) {
+				change = true;
 
-		int index = -1;
+				String newState = t[2].replace(",", "");
 
-		while (!pass) {
-			pass = true;
-			index = -1;
+				Set<String> unique = new HashSet<String>();
+				String[] tmp = newState.split("q");
 
-			for (String[] t: mT) {
-				index++;
-				if (t[2].contains(",")) {
-					pass = false;
+				for (int i = 1; i < tmp.length; i++) {
+					unique.add("q" + tmp[i]);
+				}
+				tmp = unique.toArray(new String[unique.size()]);
+				Arrays.sort(tmp);
+
+				newState = "";
+				for (String s: tmp) {
+					newState += s;
+				}
+
+				t[2] = newState;
+				newStatesList.add(newState);
+			}
+		}
+
+		for (String state: newStatesList) {
+			Boolean isFinal = false;
+			String[] s = state.split("q");
+			for (int i  = 1; i < s.length; i++) {
+				if (NFA.getFinalStates().contains("q" + s[i])) {
+					isFinal = true;
 					break;
 				}
 			}
-
-			if (pass)
-				break;
-
-//			String newState = "q" + NFA.getStates().size();
-
-			Set<String> previousStates = new HashSet<String>();
-			for (String s: mT.get(index)[2].split(",")) {
-				previousStates.add(s);
+			if (isFinal) {
+				LinkedList<String> nfaFinalStates = NFA.getFinalStates();
+				nfaFinalStates.addLast(state);
+				NFA.setFinalStates(nfaFinalStates);
 			}
-			if (previousStates.size() == 1)
-				mT.get(index)[2] = mT.get(index)[2].split(",")[0];
-			else {
-				String newState = "";
-				for (String p: previousStates)
-					newState += p;
 
-				// Update final states
-				Boolean isFinal = false;
-				for (String p: previousStates) {
-					if (NFA.getFinalStates().contains(p)) {
-						isFinal = true;
-						break;
+			for (String symbol: NFA.getSymbols()) {
+				String[] tmp = state.split("q");
+
+				String transition = "";
+
+				for (int i = 1; i < tmp.length; i++) {
+					for (String[] t: transitions) {
+						if (t[0].equals("q" + tmp[i]) && t[1].equals(symbol) && !t[2].equals("__")) {
+							if (!transition.isEmpty()) {
+								transition += ",";
+							}
+
+							transition += t[2];
+						}
 					}
 				}
-				if (isFinal)
-					NFA.getFinalStates().addLast(newState);
 
-				mT.get(index)[2] = newState;
+				Set<String> unique = new HashSet<String>();
+				String[] t = transition.replace(",", "").split("q");
+				for (int i = 1; i < t.length; i++) {
+					unique.add(t[i]);
+				}
+				t = unique.toArray(new String[unique.size()]);
+				Arrays.sort(t);
 
-				for (String s: NFA.getSymbols()) {
-					Set<String> transitionSet = new HashSet<String>();
-					String transition = "";
-
-					for (String p: previousStates) {
-						for (String[] t: originalT) {
-							if (t[0].equals(p) && t[1].equals(s)) {
-								if (!t[2].equals("__")) {
-									transitionSet.add(t[2]);
-								}
-
-								break;
-							}
-						}
+				transition = "";
+				for (int i = 0; i < t.length; i++) {
+					if (!transition.isEmpty()) {
+						transition += ",";
 					}
 
-					// Remove unreachable states
-					String[] toRemove = new String[NFA.getStates().size()];
-					index = -1;
-					for (String p: previousStates) {
-						index++;
-						Boolean flag = true;
-						for (String[] t: mT) {
-							if (t[2].equals(p)) {
-								flag = false;
-								break;
-							}
-						}
-						if (flag)
-							toRemove[index] = p;
-					}
-					for (String s2: toRemove) {
-						NFA.getStates().remove(s2);
-					}
+					transition += "q" + t[i];
+				}
 
-					if (transitionSet.containsAll(previousStates))
-						NFA.addTransition(newState, s, newState);
-					else {
-						transition = transitionSet.iterator().next();
-						Boolean flag = false;
-						if (transitionSet.size() > 1)
-							for (String t: transitionSet) {
-								if (flag)
-									transition += "," + t;
-								else
-									flag = true;
-							}
-
-						for (String state: NFA.getStates()) {
-							if (state.equals(transition.replace(",", ""))) {
-								transition = transition.replace(",", "");
-								break;
-							}
-						}
-
-						NFA.addTransition(newState, s, transition);
-					}
-
+				if (transition.replace(",", "").equals(state)) {
+					NFA.addTransition(state, symbol, state);
+				} else if (NFA.getStates().contains(transition.replace(",", ""))) {
+					int index = NFA.getStates().indexOf(transition.replace(",", ""));
+					transition = NFA.getStates().get(index);
+					NFA.addTransition(state, symbol, transition);
+				} else {
+					NFA.addTransition(state, symbol, transition);
 				}
 			}
 		}
 
-		// Remove non-deterministic states
-		String[] toRemove = new String[NFA.getStates().size()];
-		index = -1;
-		for (String s: NFA.getStates()) {
+		if (change)
+			NFA = _determinize(NFA);
+
+		return NFA;
+	}
+
+	private static Automaton renameStates(Automaton NFA) {
+		LinkedList<String> states = NFA.getStates();
+		LinkedList<String[]> transitions = NFA.getTransitions();
+		LinkedList<String> newFinalStates = new LinkedList<String>();
+
+		int index = 0;
+
+		for (int i = 0; i < states.size(); i++) {
+			for (int j = 0; j < transitions.size(); j++) {
+				if (transitions.get(j)[0].equals(states.get(i))) {
+					String s = new String("q" + index);
+					transitions.get(j)[0] = s;
+				}
+				if (transitions.get(j)[2].equals(states.get(i))) {
+					String s = new String("q" + index);
+					transitions.get(j)[2] = s;
+				}
+			}
+
+			String s = new String("q" + index);
+
+			if (NFA.getFinalStates().contains(states.get(i))) {
+				newFinalStates.addLast(s);
+			}
+
+			states.set(i, s);
+
 			index++;
-			if (s.contains(","))
-				toRemove[index] = s;
 		}
-		for (String s: toRemove) {
-			NFA.getStates().remove(s);
+
+		NFA.setFinalStates(newFinalStates);
+
+		return NFA;
+	}
+
+	private static Automaton removeNonDeterministicStates(Automaton NFA) {
+		for (int i = 0; i < NFA.getStates().size(); i++) {
+			if (NFA.getStates().get(i).contains(",")) {
+				NFA.getStates().remove(i);
+			}
 		}
+
+		return NFA;
+	}
+
+	public static Automaton determinize(Automaton NFA) {
+		NFA = _determinize(NFA);
+
+		NFA = removeNonDeterministicStates(NFA);
+		NFA = renameStates(NFA);
 
 		return NFA;
 	}
