@@ -111,7 +111,49 @@ public class Automaton {
 		return ret;
 	}
 
+	private Boolean existTransition(String a, String b) {
+		Boolean flag = false;
+		for (String[] t: transitions) {
+			if (t[0].equals(a) && t[2].equals(b)) {
+				flag = true;
+				break;
+			}
+		}
+		return flag;
+	}
+
+	@SuppressWarnings("unchecked")
 	private static Automaton removeUnreachableStates(Automaton DFA) {
+		LinkedList<String> unreachableStates = (LinkedList<String>) DFA.getStates().clone();
+		Set<String> reachableStates = new HashSet<String>();
+		unreachableStates.remove(DFA.getInitialState());
+		reachableStates.add(DFA.getInitialState());
+
+		LinkedList<String> toAdd = new LinkedList<String>();
+
+		Boolean flag = false;
+		while (!flag) {
+			flag = true;
+			toAdd.clear();
+
+			for (String state: reachableStates) {
+				for (String unState: unreachableStates) {
+					if (DFA.existTransition(state, unState)) {
+						toAdd.addLast(unState);
+						flag = false;
+					}
+				}
+			}
+
+			for (String s: toAdd) {
+				reachableStates.add(s);
+				unreachableStates.remove(s);
+			}
+		}
+
+		for (String u: unreachableStates) {
+			DFA.getStates().remove(u);
+		}
 
 		return DFA;
 	}
@@ -283,7 +325,7 @@ public class Automaton {
 		NFA = _determinize(NFA);
 
 		NFA = removeNonDeterministicStates(NFA);
-		NFA = renameStates(NFA);
+//		NFA = renameStates(NFA);
 
 		return NFA;
 	}
