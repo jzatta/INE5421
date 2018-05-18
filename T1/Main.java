@@ -585,21 +585,23 @@ public class Main {
   }
 
   public static void main(String[] args) {
-	try {
-		UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-	} catch (ClassNotFoundException e) {
-		e.printStackTrace();
-	} catch (InstantiationException e) {
-		e.printStackTrace();
-	} catch (IllegalAccessException e) {
-		e.printStackTrace();
-	} catch (UnsupportedLookAndFeelException e) {
-		e.printStackTrace();
-	}
-
-    JFrame home = new JFrame();
-
-    setUpInterface(home);
+// 	try {
+// 		UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+// 	} catch (ClassNotFoundException e) {
+// 		e.printStackTrace();
+// 	} catch (InstantiationException e) {
+// 		e.printStackTrace();
+// 	} catch (IllegalAccessException e) {
+// 		e.printStackTrace();
+// 	} catch (UnsupportedLookAndFeelException e) {
+// 		e.printStackTrace();
+// 	}
+// 
+//     JFrame home = new JFrame();
+// 
+//     setUpInterface(home);
+    String r = "(1|0)?((10)*(01)*)*(1|0)?";
+    Regex test = new Regex(r);
   }
 
 }
