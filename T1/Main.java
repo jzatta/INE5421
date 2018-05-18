@@ -83,7 +83,7 @@ public class Main {
             	Grammar Grammar1;
 				try {
 					Grammar1 = Grammar.readGrammar(G.getText());
-					
+
 					AF.setText(Grammar.toNFA(Grammar1).toString());
 				} catch (MyException e1) {
 					JOptionPane.showMessageDialog(GRtoAFFrame, e1.getMessage(), "Gramática Inválida", JOptionPane.ERROR_MESSAGE);
@@ -141,7 +141,8 @@ public class Main {
           toGR.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	Automaton M = Automaton.readAutomaton(AF.getText());
-            	
+              M = Automaton.determinize(M);
+
             	G.setText(Automaton.toGrammar(M).toString());
             }
           });
@@ -280,7 +281,7 @@ public class Main {
 			try {
 				Grammar Grammar1 = Grammar.readGrammar(G1.getText());
 				Grammar Grammar2 = Grammar.readGrammar(G2.getText());
-				
+
 				G.setText(Utils.grammarUnion(Grammar1, Grammar2).toString());
 			} catch (MyException e1) {
 				JOptionPane.showMessageDialog(GRsUnionFrame, e1.getMessage(), "Gramática Inválida", JOptionPane.ERROR_MESSAGE);
@@ -352,7 +353,7 @@ public class Main {
 			try {
 				Grammar Grammar1 = Grammar.readGrammar(G1.getText());
 				Grammar Grammar2 = Grammar.readGrammar(G2.getText());
-				
+
 				G.setText(Utils.grammarConcatenation(Grammar1, Grammar2).toString());
 			} catch (MyException e1) {
 				JOptionPane.showMessageDialog(GRsConcatenationFrame, e1.getMessage(), "Gramática Inválida", JOptionPane.ERROR_MESSAGE);
@@ -409,7 +410,7 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
 			try {
 				Grammar Grammar1 = Grammar.readGrammar(G1.getText());
-				
+
 				G.setText(Utils.kleeneClosure(Grammar1).toString());
 			} catch (MyException e1) {
 				JOptionPane.showMessageDialog(GRsClosureFrame, e1.getMessage(), "Gramática Inválida", JOptionPane.ERROR_MESSAGE);
@@ -468,6 +469,7 @@ public class Main {
           Recognition.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               Automaton M = Automaton.readAutomaton(AF.getText());
+              M = Automaton.determinize(M);
 
               if (M.recognize(Sentence.getText())) {
                 Result.setText("SENTENÇA RECONHECIDA");
@@ -530,6 +532,7 @@ public class Main {
           Enumeration.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               Automaton M = Automaton.readAutomaton(AF.getText());
+              M = Automaton.determinize(M);
 
               Result.setText("");
 
