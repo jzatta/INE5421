@@ -426,36 +426,38 @@ public class Automaton {
 	}
 
 	private static Automaton renameStates(Automaton NFA) {
-		LinkedList<String> states = NFA.getStates();
-		LinkedList<String[]> transitions = NFA.getTransitions();
-		LinkedList<String> newFinalStates = new LinkedList<String>();
+		LinkedList<String> toRename = new LinkedList<String>();
+		int index = NFA.getStates().size();
 
-		int index = 0;
+		LinkedList<String> finalStates = NFA.getFinalStates();
 
-		for (int i = 0; i < states.size(); i++) {
-			for (int j = 0; j < transitions.size(); j++) {
-				if (transitions.get(j)[0].equals(states.get(i))) {
-					String s = new String("q" + index);
-					transitions.get(j)[0] = s;
-				}
-				if (transitions.get(j)[2].equals(states.get(i))) {
-					String s = new String("q" + index);
-					transitions.get(j)[2] = s;
-				}
+		for (String state: NFA.getStates()) {
+			if (state.split("q").length > 2) {
+				toRename.addLast(state);
 			}
-
-			String s = new String("q" + index);
-
-			if (NFA.getFinalStates().contains(states.get(i))) {
-				newFinalStates.addLast(s);
-			}
-
-			states.set(i, s);
-
-			index++;
 		}
 
-		NFA.setFinalStates(newFinalStates);
+		for (String state: toRename) {
+			while (NFA.getStates().contains("q" + index)) {
+				index++;
+			}
+
+			for (String[] t: NFA.getTransitions()) {
+				if (t[0].equals(state)) {
+					t[0] = "q" + index;
+				}
+				if (t[2].equals(state)) {
+					t[2] = "q" + index;
+				}
+			}
+
+			finalStates.remove(state);
+			finalStates.addLast("q" + index);
+
+			NFA.getStates().set(NFA.getStates().indexOf(state), "q" + index);
+		}
+
+		NFA.setFinalStates(finalStates);
 
 		return NFA;
 	}
@@ -474,7 +476,7 @@ public class Automaton {
 		NFA = _determinize(NFA);
 
 		NFA = removeNonDeterministicStates(NFA);
-//		NFA = renameStates(NFA);
+		NFA = renameStates(NFA);
 
 		return NFA;
 	}
