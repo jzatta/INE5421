@@ -141,9 +141,12 @@ public class Main {
           toGR.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	Automaton M = Automaton.readAutomaton(AF.getText());
-              M = Automaton.determinize(M);
+                M = Automaton.determinize(M);
+                M = Automaton.minimize(M);
+                
+                Automaton M1 = Automaton.readAutomaton(M.toString());
 
-            	G.setText(Automaton.toGrammar(M).toString());
+            	G.setText(Automaton.toGrammar(M1).toString());
             }
           });
           AFtoGRFrame.add(toGR);
