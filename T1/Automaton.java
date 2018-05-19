@@ -247,6 +247,13 @@ public class Automaton {
 						}
 					}
 
+					if (t1.equals("__")) {
+						break;
+					}
+					if (t2.equals("__")) {
+						break;
+					}
+
 					if (pair[2].equals("0")) {
 						String[] tmp = {P[0], P[1], t1, t2};
 						analysis.addLast(tmp);
