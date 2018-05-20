@@ -44,6 +44,29 @@ public class Utils {
 
     Grammar G = new Grammar();
 
+    Boolean flag = false;
+    for (String[] s:productionsG1) {
+      if (s[0].equals(productionsG1.getFirst()[0]) && s[1].equals(Grammar.epsilon)) {
+        flag = true;
+        break;
+      }
+    }
+
+    if (flag) {
+      String[] toRemove = null;
+      for (String[] s:productionsG1) {
+        if (s[0].equals(productionsG1.getFirst()[0])) {
+          G.addProduction(s[0] + "'", s[1], s[2]);
+          if (s[2].equals(Grammar.epsilon)) {
+            toRemove = s;
+          }
+        } else {
+          break;
+        }
+      }
+      productionsG1.remove(toRemove);
+    }
+
     for (String[] s:productionsG1) {
         G.addProduction(s[0], s[1], s[2]);
 
