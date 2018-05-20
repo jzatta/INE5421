@@ -189,9 +189,11 @@ public class Utils {
 
     // Insert G1 & G2 Productions
     for (String[] s:productionsG1) {
+      if (!s[1].equals(Grammar.epsilon))
         G.addProduction(s[0], s[1], s[2]);
     }
     for (String[] s:productionsG2) {
+      if (!s[1].equals(Grammar.epsilon))
         G.addProduction(s[0], s[1], s[2]);
     }
 
