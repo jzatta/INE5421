@@ -85,6 +85,30 @@ public class Utils {
 
     Grammar G = new Grammar();
 
+    Boolean flag = false;
+    for (String[] s: productionsG2) {
+      if (s[0].equals(productionsG2.getFirst()[0])) {
+        if (s[1].equals(Grammar.epsilon)) {
+          flag = true;
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    Boolean flag2 = false;
+    for (String[] s: productionsG1) {
+      if (s[0].equals(productionsG1.getFirst()[0])) {
+        if (s[1].equals(Grammar.epsilon)) {
+          flag2 = true;
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
     // Rename G2 nonTerminalSymbols
     for (String s: nonTerminalSymbolsG2) {
       String X = s + "'";
@@ -98,14 +122,32 @@ public class Utils {
       }
     }
 
+    if (flag2) {
+      for (String[] s:productionsG2) {
+        if (s[0].equals(productionsG2.getFirst()[0])) {
+          G.addProduction(productionsG1.getFirst()[0], s[1], s[2]);
+        } else {
+          break;
+        }
+      }
+    }
+
     // Insert G1 & G2 Productions
     for (String[] s:productionsG1) {
-      if (s[2].equals(Grammar.epsilon))
-        G.addProduction(s[0], s[1], productionsG2.getFirst()[0]);
-      else
-        G.addProduction(s[0], s[1], s[2]);
+      if (!s[1].equals(Grammar.epsilon)) {
+        if (s[2].equals(Grammar.epsilon)) {
+          G.addProduction(s[0], s[1], productionsG2.getFirst()[0]);
+
+          if (flag) {
+            G.addProduction(s[0], s[1]);
+          }
+        }
+        else
+          G.addProduction(s[0], s[1], s[2]);
+      }
     }
     for (String[] s:productionsG2) {
+      if (!s[1].equals(Grammar.epsilon))
         G.addProduction(s[0], s[1], s[2]);
     }
 
