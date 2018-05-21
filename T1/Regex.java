@@ -1,3 +1,6 @@
+
+import java.util.*;
+
 public class Regex {
 
   private String regex = "";
@@ -6,6 +9,7 @@ public class Regex {
   public Regex(String regex) {
     this.regex = regex;
     t = Tree.convert(regex);
+    System.out.println(t);
   }
   
   public Automaton getAutomaton() {
@@ -23,7 +27,7 @@ class Tree {
   private Tree left;
   private Tree right;
   private Tree father;
-  private String expression;
+  private Queue<Character> expression;
   private static final String or = "|";
   private static final String concat = ".";
   private static final String lambda = "#";
@@ -46,7 +50,7 @@ class Tree {
         nonTerminal = false;
         expanded = expanded + ch;
       }
-      else if (ch == '?' || ch == '*' || ch == ')' || nonTerminal) {
+      else if (ch == '?' || ch == '*' || ch == ')') {
         nonTerminal = false;
         expanded = expanded + ch;
       }
@@ -55,56 +59,102 @@ class Tree {
         expanded = expanded + ch;
       }
       else if (ch == '(') {
+        if (!nonTerminal)
+          expanded = expanded + ".";
         nonTerminal = true;
-        expanded = expanded + "." + ch;
+        expanded = expanded + ch;
       }
     }
-//     System.out.println(expanded);
+    System.out.println(expanded);
     return new Tree(expanded);
   }
   
   private void expand() {
-    String ex;
+    Queue<Character> ex;
     ex = this.expression;
-    int level = 0;
-    for (int i = 0; i < ex.length(); i++) {
-      char ch = ex.charAt(i);
-      System.out.println(ch);
+    while (!ex.isEmpty()) {
+      char ch = ex.remove();
+      System.out.print(ch);
       if (ch >= 'a' && ch <= 'z') {
-        this.left = new Tree(Character.toString(ch));
+        this.left = new Tree(this, Character.toString(ch));
       }
       else if (ch == '?') {
-        Tree t = new Tree(this, optional);
+        Tree t = new Tree(this.father, optional);
         if (this.left != null) {
           this.left.father = t;
-          this.left = t;
         }
+        this.left = t;
       }
       else if (ch == '*') {
-        Tree t = new Tree(this, closure);
+        Tree t = new Tree(this.father, closure);
         if (this.left != null) {
           this.left.father = t;
-          this.left = t;
         }
+        this.left = t;
       }
       else if (ch == '|') {
-        Tree tf = new Tree(this, null);
-        Tree tl = new Tree(this, optional);
-        
+        Tree t = new Tree(this.father, or);
+        this.father = t;
+        t.left = this;
+        t.right = new Tree(t, ex);
+      }
+      else if (ch == '.') {
+        Tree t = new Tree(this.father, concat);
+        this.father = t;
+        t.left = this;
+        t.right = new Tree(t, ex);
+      }
+      else if (ch == '(') {
+        int level;
+        Queue tmp = new LinkedList<Character>();
+        level = 1;
+        while (level != 0) {
+          ch = ex.remove();
+          if (ch == '(') {
+            level++;
+          }
+          else if (ch == ')') {
+            level--;
+            if (level == 0)
+              break;
+          }
+          tmp.add(ch);
+        }
+        Tree tl = new Tree(this, tmp);
+        this.left = tl;
       }
     }
+    
+    System.out.println();
   }
   
   private Tree(String ex) {
     this.father = this;
-    this.expression = ex;
+    this.expression = new LinkedList<Character>();
+    for (int i = 0; i < ex.length(); i++) {
+      char ch = ex.charAt(i);
+      this.expression.add(ch);
+    }
 //     while (ex.length() != 1)
       this.expand();
   }
   
   private Tree(Tree father, String ex) {
     this.father = father;
+    this.expression = new LinkedList<Character>();
+    for (int i = 0; i < ex.length(); i++) {
+      char ch = ex.charAt(i);
+      this.expression.add(ch);
+    }
+    while (ex.length() != 1)
+      this.expand();
+  }
+  
+  private Tree(Tree father, Queue<Character> ex) {
+    this.father = father;
     this.expression = ex;
+//     while (ex.length() != 1)
+      this.expand();
   }
   
   public void setLeft(Tree left) {
@@ -125,5 +175,11 @@ class Tree {
   
   public Tree getFather() {
     return this.father;
+  }
+  
+  public String toString() {
+    String tmp = "> ";
+    tmp += this.left + "-" + expression.element() + "-" + this.right + " <";
+    return tmp;
   }
 }
