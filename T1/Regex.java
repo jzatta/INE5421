@@ -72,37 +72,39 @@ class Tree {
   private void expand() {
     Queue<Character> ex;
     ex = this.expression;
-    while (!ex.isEmpty()) {
+    while (ex.size() > 1) {
       char ch = ex.remove();
       System.out.print(ch);
-      if (ch >= 'a' && ch <= 'z') {
+      if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') ) {
         this.left = new Tree(this, Character.toString(ch));
       }
       else if (ch == '?') {
-        Tree t = new Tree(this.father, optional);
+        Tree t = new Tree(this, optional);
+        t.left = this.left;
         if (this.left != null) {
           this.left.father = t;
         }
         this.left = t;
       }
       else if (ch == '*') {
-        Tree t = new Tree(this.father, closure);
+        Tree t = new Tree(this, closure);
+        t.left = this.left;
         if (this.left != null) {
           this.left.father = t;
         }
         this.left = t;
       }
       else if (ch == '|') {
-        Tree t = new Tree(this.father, or);
-        this.father = t;
-        t.left = this;
-        t.right = new Tree(t, ex);
+        this.expression = new LinkedList<Character>();
+        this.expression.add(or.charAt(0));
+        this.right = new Tree(this, ex);
+        ex = this.expression;
       }
       else if (ch == '.') {
-        Tree t = new Tree(this.father, concat);
-        this.father = t;
-        t.left = this;
-        t.right = new Tree(t, ex);
+        this.expression = new LinkedList<Character>();
+        this.expression.add(concat.charAt(0));
+        this.right = new Tree(this, ex);
+        ex = this.expression;
       }
       else if (ch == '(') {
         int level;
@@ -124,7 +126,6 @@ class Tree {
         this.left = tl;
       }
     }
-    
     System.out.println();
   }
   
@@ -135,7 +136,7 @@ class Tree {
       char ch = ex.charAt(i);
       this.expression.add(ch);
     }
-//     while (ex.length() != 1)
+    if (ex.length() != 1)
       this.expand();
   }
   
@@ -146,14 +147,14 @@ class Tree {
       char ch = ex.charAt(i);
       this.expression.add(ch);
     }
-    while (ex.length() != 1)
+    if (ex.length() != 1)
       this.expand();
   }
   
   private Tree(Tree father, Queue<Character> ex) {
     this.father = father;
     this.expression = ex;
-//     while (ex.length() != 1)
+    if (ex.size() != 1)
       this.expand();
   }
   
@@ -178,8 +179,24 @@ class Tree {
   }
   
   public String toString() {
-    String tmp = "> ";
-    tmp += this.left + "-" + expression.element() + "-" + this.right + " <";
+    String tmp = "";
+    char ch = expression.peek();
+    if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <='9')) {
+      tmp = "" + expression.peek();
+    }
+    else if (ch == '?' || ch == '*') {
+      tmp = "(" + this.left + ")" + expression.peek();
+    }
+    else if (ch == '|') {
+      tmp = "(" + this.left + expression.peek() + this.right + ")";
+    }
+    else if (ch == '.') {
+      tmp = "" + this.left + this.right;
+    }
+    else {
+//       tmp = "(";
+//       tmp += this.left + "<" + expression.peek() + ">" + this.right + ")";
+    }
     return tmp;
   }
 }
