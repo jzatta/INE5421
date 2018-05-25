@@ -25,6 +25,7 @@ public class Regex {
 
 class Tree {
   private Tree left;
+  private Tree seam;
   private Tree right;
   private Tree father;
   private Queue<Character> expression;
@@ -65,7 +66,6 @@ class Tree {
         expanded = expanded + ch;
       }
     }
-    System.out.println(expanded);
     return new Tree(expanded);
   }
   
@@ -74,7 +74,6 @@ class Tree {
     ex = this.expression;
     while (ex.size() > 1) {
       char ch = ex.remove();
-      System.out.print(ch);
       if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') ) {
         this.left = new Tree(this, Character.toString(ch));
       }
@@ -126,7 +125,36 @@ class Tree {
         this.left = tl;
       }
     }
-    System.out.println();
+  }
+  
+  private Tree getImediateRight() {
+    Tree nodeS = this;
+    Tree nodeF = nodeS.father;
+    while (nodeF != nodeS) {
+      if (nodeS == nodeF.left) {
+        return nodeF;
+      } else {
+        nodeS = nodeF;
+        nodeF = nodeS.father;
+      }
+    }
+    return null;
+  }
+  
+  private void sew() {
+    if (this.left != null)
+      this.left.sew();
+    char ch = this.expression.peek();
+    if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch == '*' || ch == '?') {
+      Tree s = this.getImediateRight();
+      if (s == null) {
+        this.seam = new Tree(lambda);
+      } else {
+        this.seam = s;
+      }
+    }
+    if (this.right != null)
+      this.right.sew();
   }
   
   private Tree(String ex) {
@@ -138,6 +166,7 @@ class Tree {
     }
     if (ex.length() != 1)
       this.expand();
+    this.sew();
   }
   
   private Tree(Tree father, String ex) {
@@ -181,21 +210,27 @@ class Tree {
   public String toString() {
     String tmp = "";
     char ch = expression.peek();
-    if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <='9')) {
-      tmp = "" + expression.peek();
-    }
-    else if (ch == '?' || ch == '*') {
-      tmp = "(" + this.left + ")" + expression.peek();
-    }
-    else if (ch == '|') {
-      tmp = "(" + this.left + expression.peek() + this.right + ")";
-    }
-    else if (ch == '.') {
-      tmp = "" + this.left + this.right;
+    if (true) {
+      if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <='9')) {
+        tmp = "" + ch + "{/\\" + this.seam.expression.peek() + "}";
+      }
+      else if (ch == '?' || ch == '*') {
+        tmp = "(" + this.left + ")" + ch + "{/\\" + this.seam.expression.peek() + "}";
+      }
+      else if (ch == '|') {
+        tmp = "(" + this.left + ch + this.right + ")";
+      }
+      else if (ch == '.') {
+        tmp = "" + this.left + this.right;
+      }
     }
     else {
-//       tmp = "(";
-//       tmp += this.left + "<" + expression.peek() + ">" + this.right + ")";
+      if (this.left == null && this.right == null) {
+        tmp = "" + expression.peek();
+      } else {
+        tmp = "(";
+        tmp += this.left + "<" + expression.peek() + ">" + this.right + ")";
+      }
     }
     return tmp;
   }
