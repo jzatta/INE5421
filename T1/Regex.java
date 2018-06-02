@@ -9,6 +9,7 @@ public class Regex {
   public Regex(String regex) {
     this.regex = regex;
     t = Tree.convert(regex);
+    t.getAutomaton();
     System.out.println(t);
   }
   
@@ -29,6 +30,7 @@ class Tree {
   private Tree right;
   private Tree father;
   private Queue<Character> expression;
+  private boolean isTerminal;
   private static final String or = "|";
   private static final String concat = ".";
   private static final String lambda = "#";
@@ -67,6 +69,106 @@ class Tree {
       }
     }
     return new Tree(expanded);
+  }
+  
+  public char getChar() {
+    return this.expression.peek();
+  }
+  
+  private static Set<Tree> visited;
+  private List<DiSimoneState> states;
+  private Automaton DFA;
+  int stateCount;
+  
+  public Automaton getAutomaton() {
+    if (DFA != null)
+      return DFA;
+    visited = new HashSet<Tree>();
+    
+    stateCount = 0;
+    
+    // Add root Node
+    DiSimoneState state = new DiSimoneState();
+    
+    this.getDown(state);
+    state.buildStates();
+    System.out.println(DiSimoneState.getReadable());
+    
+    DFA = new Automaton();
+//     DFA.setInitialState("q0");
+    return DFA;
+  }
+  
+  public void resetVisited() {
+    visited = new HashSet<Tree>();
+  }
+  
+  public void getDown(DiSimoneState state) {
+    if (visited.contains(this)) {
+      return;
+    }
+    visited.add(this);
+    char ch = this.expression.peek();
+    switch (ch) {
+      case '?':
+        left.getDown(state);
+        visited.remove(seam);
+        seam.getUp(state);
+        break;
+      case '*':
+        left.getDown(state);
+        visited.remove(seam);
+        seam.getUp(state);
+      break;
+      case '.':
+        left.getDown(state);
+      break;
+      case '|':
+        left.getDown(state);
+        right.getDown(state);
+      break;
+      default:
+      // Terminal
+        state.insertComp(ch, this);
+      break;
+    }
+  }
+  
+  public void getUp(DiSimoneState state) {
+    if (visited.contains(this)) {
+      return;
+    }
+    visited.add(this);
+    char ch = this.expression.peek();
+    switch (ch) {
+      case '?':
+        seam.getUp(state);
+      break;
+      case '*':
+        left.getDown(state);
+        visited.remove(seam);
+        seam.getUp(state);
+        break;
+      case '.':
+        right.getDown(state);
+        break;
+      case '|':
+        Tree nd = this;
+        while (nd.seam == null) {
+          nd = nd.right;
+        }
+        visited.remove(nd);
+        nd.getUp(state);
+        break;
+      case '#':
+        // Lambda
+        state.setLambda();
+        break;
+      default:
+        // Terminal
+        seam.getUp(state);
+        break;
+    }
   }
   
   private void expand() {
@@ -157,6 +259,13 @@ class Tree {
       this.right.sew();
   }
   
+  private int countTerminal;
+  private static int totalTerminal = 1;
+  
+  public int hashCode() {
+    return countTerminal;
+  }
+  
   private Tree(String ex) {
     this.father = this;
     this.expression = new LinkedList<Character>();
@@ -164,8 +273,18 @@ class Tree {
       char ch = ex.charAt(i);
       this.expression.add(ch);
     }
-    if (ex.length() != 1)
+    if (ex.length() != 1) {
+      this.isTerminal = false;
       this.expand();
+    } else {
+      char ch = ex.charAt(0);
+      if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <='9') || ch == lambda.charAt(0)) {
+        this.isTerminal = true;
+        countTerminal = totalTerminal++;
+      } else {
+        this.isTerminal = false;
+      }
+    }
     this.sew();
   }
   
@@ -176,15 +295,35 @@ class Tree {
       char ch = ex.charAt(i);
       this.expression.add(ch);
     }
-    if (ex.length() != 1)
+    if (ex.length() != 1) {
+      this.isTerminal = false;
       this.expand();
+    } else {
+      char ch = ex.charAt(0);
+      if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <='9') || ch == lambda.charAt(0)) {
+        this.isTerminal = true;
+        countTerminal = totalTerminal++;
+      } else {
+        this.isTerminal = false;
+      }
+    }
   }
   
   private Tree(Tree father, Queue<Character> ex) {
     this.father = father;
     this.expression = ex;
-    if (ex.size() != 1)
+    if (ex.size() != 1) {
+      this.isTerminal = false;
       this.expand();
+    } else {
+      char ch = ex.peek();
+      if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <='9') || ch == lambda.charAt(0)) {
+        this.isTerminal = true;
+        countTerminal = totalTerminal++;
+      } else {
+        this.isTerminal = false;
+      }
+    }
   }
   
   public void setLeft(Tree left) {
