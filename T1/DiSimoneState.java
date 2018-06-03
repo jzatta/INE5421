@@ -4,15 +4,22 @@ import java.util.*;
 public  class DiSimoneState {
   private boolean hasLambda;
   private int state;
-  private static int stateCount = 0;
   private Map<Character, Set<Tree>> composition;
   private Map<Character, DiSimoneState> transitions;
-  private static Set<Character> terminals = new HashSet<Character>();
-  private static List<DiSimoneState> toEval = new LinkedList<DiSimoneState>();
-  private static Set<DiSimoneState> cleared = new HashSet<DiSimoneState>();
+  private static int stateCount;
+  private static Set<Character> terminals;
+  private static List<DiSimoneState> toEval;
+  private static Set<DiSimoneState> cleared;
   
+  public static DiSimoneState newDiSimone() {
+    stateCount = 0;
+    terminals = new HashSet<Character>();
+    toEval = new LinkedList<DiSimoneState>();
+    cleared = new HashSet<DiSimoneState>();
+    return new DiSimoneState();
+  }
   
-  public DiSimoneState() {
+  private DiSimoneState() {
     composition = new HashMap<Character, Set<Tree>>();
     transitions = new HashMap<Character, DiSimoneState>();
     hasLambda = false;
@@ -109,6 +116,31 @@ public  class DiSimoneState {
     }
 //     System.out.println("k" + this.state + " == k" + s.state);
     return true;
+  }
+  
+  public Automaton getAutomaton() {
+    Automaton DFA = new Automaton();
+    
+    LinkedList<String> finals = new LinkedList<String>();
+    
+    for (DiSimoneState s: cleared) {
+      for (Character t: terminals) {
+        DiSimoneState to = s.transitions.get(t);
+        if (to == null) {
+          DFA.addTransition("q" + s.state, Character.toString(t), "__");
+        } else {
+          DFA.addTransition("q" + s.state, Character.toString(t), "q" + to.state);
+        }
+      }
+      if (s.state == 0) {
+        DFA.setInitialState("q" + s.state);
+      }
+      if (s.hasLambda) {
+        finals.add("q" + s.state);
+      }
+    }
+    DFA.setFinalStates(finals);
+    return DFA;
   }
   
   public static String getReadable() {

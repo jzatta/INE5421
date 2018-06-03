@@ -14,7 +14,7 @@ public class Regex {
   }
   
   public Automaton getAutomaton() {
-    Automaton a = new Automaton();
+    Automaton a = t.getAutomaton();
     return a;
   }
 
@@ -88,14 +88,18 @@ class Tree {
     stateCount = 0;
     
     // Add root Node
-    DiSimoneState state = new DiSimoneState();
+    DiSimoneState state = DiSimoneState.newDiSimone();
     
     this.getDown(state);
     state.buildStates();
     System.out.println(DiSimoneState.getReadable());
+    System.out.println("");
+    System.out.println("");
     
-    DFA = new Automaton();
-//     DFA.setInitialState("q0");
+    DFA = state.getAutomaton();
+    System.out.println(DFA);
+    System.out.println("");
+    System.out.println("");
     return DFA;
   }
   

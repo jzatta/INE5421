@@ -640,33 +640,37 @@ public class Main {
   }
 
   public static void main(String[] args) {
-// 	try {
-// 		UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-// 	} catch (ClassNotFoundException e) {
-// 		e.printStackTrace();
-// 	} catch (InstantiationException e) {
-// 		e.printStackTrace();
-// 	} catch (IllegalAccessException e) {
-// 		e.printStackTrace();
-// 	} catch (UnsupportedLookAndFeelException e) {
-// 		e.printStackTrace();
-// 	}
-// 
-//     JFrame home = new JFrame();
-// 
-//     setUpInterface(home);
-    String r = "(0|1)?.((0.1)*.(1.0)*)*.(0|1)?";
-//     String r = "(0|1)?1";
-//                                                                                                         #
-//                                                                    .
-//                                    .                                                               ?
-//                    ?                               *                               |
-//            |                               .                               6               7
-//        0       1                       *       *
-//                                      .       .
-//                                     2 3     4 5
-//     String r = "(aa)?";
-    Regex test = new Regex(r);
+    if (true) {
+      try {
+        UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+      } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+      } catch (InstantiationException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (UnsupportedLookAndFeelException e) {
+        e.printStackTrace();
+      }
+
+        JFrame home = new JFrame();
+
+        setUpInterface(home);
+        
+    } else {
+      String r = "(0|1)?.((0.1)*.(1.0)*)*.(0|1)?";
+  //     String r = "(0|1)?1";
+  //                                                                                                         #
+  //                                                                    .
+  //                                    .                                                               ?
+  //                    ?                               *                               |
+  //            |                               .                               6               7
+  //        0       1                       *       *
+  //                                      .       .
+  //                                     2 3     4 5
+  //     String r = "(aa)?";
+      Regex test = new Regex(r);
+    }
   }
 
 }
