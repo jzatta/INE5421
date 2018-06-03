@@ -5,16 +5,21 @@ public class Regex {
 
   private String regex = "";
   private Tree t;
+  private Automaton a;
 
   public Regex(String regex) {
     this.regex = regex;
-    t = Tree.convert(regex);
-    t.getAutomaton();
-    System.out.println(t);
+    t = null;
+    a = null;
   }
   
   public Automaton getAutomaton() {
-    Automaton a = t.getAutomaton();
+    if (t == null) {
+      t = Tree.convert(regex);
+      if (a == null) {
+        a = t.getAutomaton();
+      }
+    }
     return a;
   }
 
