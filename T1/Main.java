@@ -35,6 +35,55 @@ public class Main {
 
     JButton btn_DeSimone = new JButton("ER -> AF (De Simone)");
     btn_DeSimone.setBounds(50, topPosition, 400, 30);
+    btn_DeSimone.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          JFrame ERtoAFFrame = new JFrame();
+          ERtoAFFrame.setSize(480, 390);
+          ERtoAFFrame.setLayout(null);
+          ERtoAFFrame.setVisible(true);
+          ERtoAFFrame.setTitle("ER -> AF (De Simone)");
+
+          JTextArea ER = new JTextArea("ab|ba");
+          ER.setBounds(10, 10, 200, 250);
+          ER.setFont(new Font("monospaced", Font.PLAIN, 14));
+          ERtoAFFrame.add(ER);
+
+          JTextArea AF = new JTextArea();
+          AF.setBounds(260, 10, 200, 250);
+          AF.setFont(new Font("monospaced", Font.PLAIN, 14));
+          AF.setEditable(false);
+          ERtoAFFrame.add(AF);
+
+          JButton loadER = new JButton("Carregar ER");
+          loadER.setBounds(10, 270, 200, 30);
+          loadER.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              ER.setText(Utils.loadFromDisk());
+            }
+          });
+          ERtoAFFrame.add(loadER);
+
+          JButton saveAF = new JButton("Salvar");
+          saveAF.setBounds(260, 270, 200, 30);
+          saveAF.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Utils.saveToDisk(AF.getText());
+            }
+          });
+          ERtoAFFrame.add(saveAF);
+
+          JButton toDFA = new JButton("Converter para AF");
+          toDFA.setBounds(10, 310, 200, 30);
+          toDFA.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	Regex regex = new Regex(ER.getText());
+
+              AF.setText(regex.getAutomaton().toString());
+            }
+          });
+          ERtoAFFrame.add(toDFA);
+        }
+      });
     topPosition += 40;
 
     JButton btn_GrToAf = new JButton("Transformar GR em AF");
@@ -143,7 +192,7 @@ public class Main {
             	Automaton M = Automaton.readAutomaton(AF.getText());
                 M = Automaton.determinize(M);
                 M = Automaton.minimize(M);
-                
+
                 Automaton M1 = Automaton.readAutomaton(M.toString());
 
             	G.setText(Automaton.toGrammar(M1).toString());
@@ -640,37 +689,21 @@ public class Main {
   }
 
   public static void main(String[] args) {
-    if (true) {
-      try {
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-      } catch (ClassNotFoundException e) {
-        e.printStackTrace();
-      } catch (InstantiationException e) {
-        e.printStackTrace();
-      } catch (IllegalAccessException e) {
-        e.printStackTrace();
-      } catch (UnsupportedLookAndFeelException e) {
-        e.printStackTrace();
-      }
-
-        JFrame home = new JFrame();
-
-        setUpInterface(home);
-        
-    } else {
-      String r = "(0|1)?.((0.1)*.(1.0)*)*.(0|1)?";
-  //     String r = "(0|1)?1";
-  //                                                                                                         #
-  //                                                                    .
-  //                                    .                                                               ?
-  //                    ?                               *                               |
-  //            |                               .                               6               7
-  //        0       1                       *       *
-  //                                      .       .
-  //                                     2 3     4 5
-  //     String r = "(aa)?";
-      Regex test = new Regex(r);
+    try {
+      UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (UnsupportedLookAndFeelException e) {
+      e.printStackTrace();
     }
+
+    JFrame home = new JFrame();
+
+    setUpInterface(home);
   }
 
 }
