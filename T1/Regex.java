@@ -16,6 +16,7 @@ public class Regex {
   public Automaton getAutomaton() {
     if (t == null) {
       t = Tree.convert(regex);
+      System.out.println(t);
       if (a == null) {
         a = t.getAutomaton();
       }
@@ -47,6 +48,7 @@ class Tree {
     char ch = ex.charAt(0);
     String expanded = Character.toString(ch);
     boolean nonTerminal = false;
+    totalTerminal = 1;
     if (ch == '(') {
       nonTerminal = true;
     }
@@ -181,6 +183,52 @@ class Tree {
   }
   
   private void expand() {
+    this.solveOr();
+    this.solveConcatClosureOptional();
+  }
+  
+  private void solveOr() {
+    Queue<Character> ex;
+    Queue<Character> left;
+    left = new LinkedList<Character>();
+    ex = this.expression;
+    while (ex.size() > 1) {
+      char ch = ex.remove();
+      if (ch == '|') {
+        this.expression = new LinkedList<Character>();
+        this.expression.add(or.charAt(0));
+        this.left = new Tree(this, left);
+        this.right = new Tree(this, ex);
+        left = new LinkedList<Character>();
+        ex = this.expression;
+      }
+      else if (ch == '(') {
+        int level;
+        level = 1;
+        left.add(ch);
+        while (level != 0) {
+          ch = ex.remove();
+          left.add(ch);
+          if (ch == '(') {
+            level++;
+          }
+          else if (ch == ')') {
+            level--;
+            if (level == 0)
+              break;
+          }
+        }
+      } else {
+        left.add(ch);
+      }
+    }
+    if (left.size() > 0) {
+      left.add(ex.remove());
+      this.expression = left;
+    }
+  }
+  
+  private void solveConcatClosureOptional() {
     Queue<Character> ex;
     ex = this.expression;
     while (ex.size() > 1) {
@@ -204,12 +252,6 @@ class Tree {
         }
         this.left = t;
       }
-      else if (ch == '|') {
-        this.expression = new LinkedList<Character>();
-        this.expression.add(or.charAt(0));
-        this.right = new Tree(this, ex);
-        ex = this.expression;
-      }
       else if (ch == '.') {
         this.expression = new LinkedList<Character>();
         this.expression.add(concat.charAt(0));
@@ -232,8 +274,12 @@ class Tree {
           }
           tmp.add(ch);
         }
-        Tree tl = new Tree(this, tmp);
-        this.left = tl;
+        if (ex.size() > 0) {
+          Tree tl = new Tree(this, tmp);
+          this.left = tl;
+        } else {
+          ex = tmp;
+        }
       }
     }
   }
