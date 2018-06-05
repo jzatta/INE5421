@@ -11,6 +11,7 @@ public  class DiSimoneState {
   private static List<DiSimoneState> toEval;
   private static Set<DiSimoneState> cleared;
   
+  // Cria uma instancia do Di Simone, inicializando as estruturas usadas.
   public static DiSimoneState newDiSimone() {
     stateCount = 0;
     terminals = new HashSet<Character>();
@@ -19,6 +20,7 @@ public  class DiSimoneState {
     return new DiSimoneState();
   }
   
+  // Constroi um objeto que representa um estado do Di Simone.
   private DiSimoneState() {
     composition = new HashMap<Character, Set<Tree>>();
     transitions = new HashMap<Character, DiSimoneState>();
@@ -26,6 +28,7 @@ public  class DiSimoneState {
     state = stateCount++;
   }
   
+  // Deriva todos os outros estados a partir do estado inicial
   public void buildStates() {
     toEval.add(this);
     while (toEval.size() > 0) {
@@ -71,10 +74,12 @@ public  class DiSimoneState {
     }
   }
   
+  // Define estado como final se encontrar um lambda nas composicoes
   public void setLambda() {
     hasLambda = true;
   }
   
+  // Adiciona uma composicao na lista de composiscoes do estado
   void insertComp(Character ch, Tree terminal) {
     Set<Tree> t = composition.get(ch);
     if (t == null) {
@@ -84,6 +89,7 @@ public  class DiSimoneState {
     t.add(terminal);
   }
   
+  // Verifica se as composicoes sao iguais, para definir como estado equivalente
   boolean isEquivalent(DiSimoneState s) {
     if (this.hasLambda != s.hasLambda) {
       return false;
@@ -118,6 +124,7 @@ public  class DiSimoneState {
     return true;
   }
   
+  // Gera o automato a partir dos estados criados no De Simone
   public Automaton getAutomaton() {
     Automaton DFA = new Automaton();
     
@@ -143,6 +150,7 @@ public  class DiSimoneState {
     return DFA;
   }
   
+  // Gera dados legiveis para humanos, usado para conferir a geracao de estados
   public static String getReadable() {
     String s = "s  |";
     for (Character t: terminals) {

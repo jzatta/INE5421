@@ -3,20 +3,22 @@ import java.util.*;
 
 public class Regex {
 
-  private String regex = "";
+  private String regex;
   private Tree t;
   private Automaton a;
 
+  // Intancia um objeto para expressão regular, passando uma string com a expressao.
   public Regex(String regex) {
     this.regex = regex;
     t = null;
     a = null;
   }
   
+  // Gera e retorna o automato referente a expressao.
   public Automaton getAutomaton() {
     if (t == null) {
       t = Tree.convert(regex);
-      System.out.println(t);
+//       System.out.println(t);
       if (a == null) {
         a = t.getAutomaton();
       }
@@ -24,6 +26,7 @@ public class Regex {
     return a;
   }
 
+  // retorna a expressao.
   public String toString() {
     return regex;
   }
@@ -43,6 +46,7 @@ class Tree {
   private static final String closure = "*";
   private static final String optional = "?";
   
+  // Gera uma arvore para o De Simoni, explicitando as concatenacoes.
   public static Tree convert(String ex) {
     // put dots in expression
     char ch = ex.charAt(0);
@@ -78,6 +82,7 @@ class Tree {
     return new Tree(expanded);
   }
   
+  // Retorna o caractere referente ao nodo da arvore
   public char getChar() {
     return this.expression.peek();
   }
@@ -85,35 +90,37 @@ class Tree {
   private static Set<Tree> visited;
   private List<DiSimoneState> states;
   private Automaton DFA;
-  int stateCount;
   
+  // Gera o automato a partir da arvore
   public Automaton getAutomaton() {
     if (DFA != null)
       return DFA;
     visited = new HashSet<Tree>();
     
-    stateCount = 0;
-    
-    // Add root Node
+    // Add root Node, the initial state
     DiSimoneState state = DiSimoneState.newDiSimone();
     
+    // writes compositions to Di Simone initial state
     this.getDown(state);
+    // build other states, based in compositions of initial state
     state.buildStates();
-    System.out.println(DiSimoneState.getReadable());
-    System.out.println("");
-    System.out.println("");
+//     System.out.println(DiSimoneState.getReadable());
+//     System.out.println("");
+//     System.out.println("");
     
     DFA = state.getAutomaton();
-    System.out.println(DFA);
-    System.out.println("");
-    System.out.println("");
+//     System.out.println(DFA);
+//     System.out.println("");
+//     System.out.println("");
     return DFA;
   }
   
+  // reinicia os estados visitados para percorrer a arvore
   public void resetVisited() {
     visited = new HashSet<Tree>();
   }
   
+  // executa um passo de descida na arvore
   public void getDown(DiSimoneState state) {
     if (visited.contains(this)) {
       return;
@@ -145,6 +152,7 @@ class Tree {
     }
   }
   
+  // executa um passo de subida na arvore
   public void getUp(DiSimoneState state) {
     if (visited.contains(this)) {
       return;
@@ -182,11 +190,13 @@ class Tree {
     }
   }
   
+  // Expande a arvore para que fique apenas um simbolo em cada nodo
   private void expand() {
     this.solveOr();
     this.solveConcatClosureOptional();
   }
   
+  // expande as operacoes pois tem menor precedencia
   private void solveOr() {
     Queue<Character> ex;
     Queue<Character> left;
@@ -228,6 +238,7 @@ class Tree {
     }
   }
   
+  // expande as outras operacoes com maior precedencia e parenteses
   private void solveConcatClosureOptional() {
     Queue<Character> ex;
     ex = this.expression;
@@ -284,7 +295,8 @@ class Tree {
     }
   }
   
-  private Tree getImediateRight() {
+  // Retorna o nodo para qual deve ser feita a costura, null caso nao tenha
+  private Tree getImediateUpperRight() {
     Tree nodeS = this;
     Tree nodeF = nodeS.father;
     while (nodeF != nodeS) {
@@ -298,12 +310,13 @@ class Tree {
     return null;
   }
   
+  // costura a arvore e cria o 'nodo lambda'
   private void sew() {
     if (this.left != null)
       this.left.sew();
     char ch = this.expression.peek();
     if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch == '*' || ch == '?') {
-      Tree s = this.getImediateRight();
+      Tree s = this.getImediateUpperRight();
       if (s == null) {
         this.seam = new Tree(lambda);
       } else {
@@ -317,10 +330,12 @@ class Tree {
   private int countTerminal;
   private static int totalTerminal = 1;
   
+  // Retorna um inteiro referente a enumeracao dos nodos finais
   public int hashCode() {
     return countTerminal;
   }
   
+  // Instancia o nodo raiz da arvore, recebendo a expressao expandida
   private Tree(String ex) {
     this.father = this;
     this.expression = new LinkedList<Character>();
@@ -343,6 +358,7 @@ class Tree {
     this.sew();
   }
   
+  // Instancia um nodo filho para a arvore, recebendo uma expressaoexpandida
   private Tree(Tree father, String ex) {
     this.father = father;
     this.expression = new LinkedList<Character>();
@@ -364,6 +380,7 @@ class Tree {
     }
   }
   
+  // Instancia um nodo filho para a arvore, recebendo uma lista de caracteres
   private Tree(Tree father, Queue<Character> ex) {
     this.father = father;
     this.expression = ex;
@@ -381,26 +398,7 @@ class Tree {
     }
   }
   
-  public void setLeft(Tree left) {
-    this.left = left;
-  }
-  
-  public void setRight(Tree left) {
-    this.right = right;
-  }
-  
-  public Tree getLeft() {
-    return this.left;
-  }
-  
-  public Tree getRight() {
-    return this.right;
-  }
-  
-  public Tree getFather() {
-    return this.father;
-  }
-  
+  // Retora uma string legivel para humanos da arvore para debug
   public String toString() {
     String tmp = "";
     char ch = expression.peek();
