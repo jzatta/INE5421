@@ -12,36 +12,45 @@ public class Automaton {
 	String initialState = "";
 	LinkedList<String> finalStates = new LinkedList<String>();
 
+  // Apenas cria um objeto automato
 	public Automaton() {}
 
+	// define o estado inicial do automato
 	public void setInitialState(String initialState) {
 		this.initialState = initialState;
 	}
 
+	// Retorna qual o estado inicial do automato
 	public String getInitialState() {
 		return initialState;
 	}
 
+	// Define o conjunto de estados finais do automato
 	public void setFinalStates(LinkedList<String> finalStates) {
 		this.finalStates = finalStates;
 	}
 
+	// Retorna lista de estados que sao finais
 	public LinkedList<String> getFinalStates() {
 		return finalStates;
 	}
 
+	// Retorna lista de transicoes
 	public LinkedList<String[]> getTransitions() {
 		return transitions;
 	}
 
+	// Retorna uma lista com todos os estados do automato
 	public LinkedList<String> getStates() {
 		return states;
 	}
 
+	// Retorna uma lista com o alfabeto do automato
 	public LinkedList<String> getSymbols() {
 		return symbols;
 	}
 
+	// Adiciona uma transicao ao automato, do tipo d(X, x) = Y
 	public void addTransition(String X, String x, String Y) {
 		String[] transition = new String[3];
 
@@ -59,6 +68,7 @@ public class Automaton {
 		transitions.addLast(transition);
 	}
 
+	// Converte o automato para uma gramatica e retorna
 	public static Grammar toGrammar(Automaton M) {
 		LinkedList<String[]> transitions = M.getTransitions();
 		Grammar G = new Grammar();
