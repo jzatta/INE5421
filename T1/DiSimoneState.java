@@ -104,10 +104,6 @@ public  class DiSimoneState {
 //       System.out.println("k" + this.state + " != k" + s.state);
       return false;
     }
-    if (k1 == null) {
-//       System.out.println("k" + this.state + " != k" + s.state);
-      return false;
-    }
     if (!(k1.containsAll(k2) && k2.containsAll(k1))) {
 //       System.out.println("k" + this.state + " != k" + s.state);
       return false;

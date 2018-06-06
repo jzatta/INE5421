@@ -39,7 +39,6 @@ class Tree {
   private Tree right;
   private Tree father;
   private Queue<Character> expression;
-  private boolean isTerminal;
   private static final String or = "|";
   private static final String concat = ".";
   private static final String lambda = "#";
@@ -88,7 +87,6 @@ class Tree {
   }
   
   private static Set<Tree> visited;
-  private List<DiSimoneState> states;
   private Automaton DFA;
   
   // Gera o automato a partir da arvore
@@ -271,7 +269,7 @@ class Tree {
       }
       else if (ch == '(') {
         int level;
-        Queue tmp = new LinkedList<Character>();
+        Queue<Character> tmp = new LinkedList<Character>();
         level = 1;
         while (level != 0) {
           ch = ex.remove();
@@ -344,15 +342,11 @@ class Tree {
       this.expression.add(ch);
     }
     if (ex.length() != 1) {
-      this.isTerminal = false;
       this.expand();
     } else {
       char ch = ex.charAt(0);
       if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <='9') || ch == lambda.charAt(0)) {
-        this.isTerminal = true;
         countTerminal = totalTerminal++;
-      } else {
-        this.isTerminal = false;
       }
     }
     this.sew();
@@ -367,15 +361,11 @@ class Tree {
       this.expression.add(ch);
     }
     if (ex.length() != 1) {
-      this.isTerminal = false;
       this.expand();
     } else {
       char ch = ex.charAt(0);
       if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <='9') || ch == lambda.charAt(0)) {
-        this.isTerminal = true;
         countTerminal = totalTerminal++;
-      } else {
-        this.isTerminal = false;
       }
     }
   }
@@ -385,15 +375,11 @@ class Tree {
     this.father = father;
     this.expression = ex;
     if (ex.size() != 1) {
-      this.isTerminal = false;
       this.expand();
     } else {
       char ch = ex.peek();
       if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <='9') || ch == lambda.charAt(0)) {
-        this.isTerminal = true;
         countTerminal = totalTerminal++;
-      } else {
-        this.isTerminal = false;
       }
     }
   }
@@ -416,14 +402,14 @@ class Tree {
         tmp = "" + this.left + this.right;
       }
     }
-    else {
-      if (this.left == null && this.right == null) {
-        tmp = "" + expression.peek();
-      } else {
-        tmp = "(";
-        tmp += this.left + "<" + expression.peek() + ">" + this.right + ")";
-      }
-    }
+//    else {
+//      if (this.left == null && this.right == null) {
+//        tmp = "" + expression.peek();
+//      } else {
+//        tmp = "(";
+//        tmp += this.left + "<" + expression.peek() + ">" + this.right + ")";
+//      }
+//    }
     return tmp;
   }
 }
