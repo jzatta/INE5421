@@ -9,10 +9,12 @@ public class Grammar {
 
   public Grammar() {}
 
+  // Retorna as produções
   public LinkedList<String[]> getProductions() {
     return productions;
   }
 
+  // Retorna os símbolos não-terminais
   public LinkedList<String> getNonTerminalSymbols() {
     return nonTerminalSymbols;
   }
@@ -36,6 +38,7 @@ public class Grammar {
     productions.addLast(production);
   }
 
+  // Converte para autômato finito
   public static Automaton toNFA(Grammar G) {
     LinkedList<String[]> gProductions = G.getProductions();
     LinkedList<String> gNonTerminals = G.getNonTerminalSymbols();
@@ -109,6 +112,7 @@ public class Grammar {
     return M;
   }
 
+  // Converte para String
   public String toString() {
     String ln = System.getProperty("line.separator");
     String str = "";
@@ -137,6 +141,7 @@ public class Grammar {
     return str;
   }
 
+  // Valida a gramática
   private static Boolean validateGrammar(String s) throws MyException {
 	  String[] lines = s.split(System.getProperty("line.separator"));
 
@@ -200,6 +205,7 @@ public class Grammar {
 	  return true;
   }
 
+  // Lê uma gramática
   public static Grammar readGrammar(String s) throws MyException {
     String[] lines = s.split(System.getProperty("line.separator"));
     LinkedList<String> prodList = new LinkedList<String>();

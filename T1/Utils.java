@@ -4,6 +4,7 @@ import javax.swing.*;
 
 public class Utils {
 
+  // Salva uma String em disco
   public static void saveToDisk(String s) {
     JFileChooser save = new JFileChooser();
     save.showSaveDialog(null);
@@ -23,6 +24,7 @@ public class Utils {
     } catch (Exception e) {}
   }
 
+  // Carrega uma String do disco
   public static String loadFromDisk() {
     JFileChooser open = new JFileChooser();
     open.showOpenDialog(null);
@@ -39,6 +41,7 @@ public class Utils {
     return ret;
   }
 
+  // Executa o fechamento de uma gramática
   public static Grammar kleeneClosure(Grammar G1) {
 	LinkedList<String[]> productionsG1 = G1.getProductions();
 
@@ -77,6 +80,7 @@ public class Utils {
     return G;
   }
 
+  // Executa a concatenação de duas gramáticas
   public static Grammar grammarConcatenation(Grammar G1, Grammar G2) {
     LinkedList<String> nonTerminalSymbolsG2 = G2.getNonTerminalSymbols();
 
@@ -154,6 +158,7 @@ public class Utils {
     return G;
   }
 
+  // Executa a união de duas gramáticas
   public static Grammar grammarUnion(Grammar G1, Grammar G2) {
     LinkedList<String> nonTerminalSymbolsG2 = G2.getNonTerminalSymbols();
 

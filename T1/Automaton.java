@@ -109,6 +109,7 @@ public class Automaton {
 		return G;
 	}
 
+	//  Renomeia as produções
 	private static String renameProduction(int index) {
 		char[] alphabet = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'W', 'Y', 'Z'};
 
@@ -121,6 +122,7 @@ public class Automaton {
 		return ret;
 	}
 
+	// Verifica se existe uma transição
 	private Boolean existTransition(String a, String b) {
 		Boolean flag = false;
 		for (String[] t: transitions) {
@@ -132,6 +134,7 @@ public class Automaton {
 		return flag;
 	}
 
+	// Verifica o destino de uma transição
 	private String transitionTo(String stateFrom, String symbol) {
 		for (String[] t: transitions) {
 			if (t[0].equals(stateFrom) && t[1].equals(symbol)) {
@@ -142,6 +145,7 @@ public class Automaton {
 		return null;
 	}
 
+	// Remove estados inalcançáveis
 	@SuppressWarnings("unchecked")
 	private static Automaton removeUnreachableStates(Automaton DFA) {
 		LinkedList<String> unreachableStates = (LinkedList<String>) DFA.getStates().clone();
@@ -178,6 +182,7 @@ public class Automaton {
 		return DFA;
 	}
 
+	// Remove estados mortos
 	@SuppressWarnings("unchecked")
 	private static Automaton removeDeadStates(Automaton DFA) {
 		LinkedList<String> deadStates = (LinkedList<String>) DFA.getStates().clone();
@@ -222,6 +227,7 @@ public class Automaton {
 		return DFA;
 	}
 
+	// Remove estados equivalentes
 	private static Automaton removeEquivalentStates(Automaton DFA) {
 		LinkedList<String[]> pairs = new LinkedList<String[]>();
 		LinkedList<String[]> analysis = new LinkedList<String[]>();
@@ -334,6 +340,7 @@ public class Automaton {
 		return DFA;
 	}
 
+	// Minimiza
 	public static Automaton minimize(Automaton DFA) {
 		DFA = removeUnreachableStates(DFA);
 		DFA = removeDeadStates(DFA);
@@ -342,6 +349,7 @@ public class Automaton {
 		return DFA;
 	}
 
+	// Determiniza
 	private static Automaton _determinize(Automaton NFA) {
 		Boolean change = false;
 		LinkedList<String[]> transitions = NFA.getTransitions();
@@ -442,6 +450,7 @@ public class Automaton {
 		return NFA;
 	}
 
+	// Renomeia os estados
 	private static Automaton renameStates(Automaton NFA) {
 		LinkedList<String> toRename = new LinkedList<String>();
 		int index = NFA.getStates().size();
@@ -479,6 +488,7 @@ public class Automaton {
 		return NFA;
 	}
 
+	// Remove estados não-determinísticos
 	private static Automaton removeNonDeterministicStates(Automaton NFA) {
 		for (int i = 0; i < NFA.getStates().size(); i++) {
 			if (NFA.getStates().get(i).contains(",")) {
@@ -489,6 +499,7 @@ public class Automaton {
 		return NFA;
 	}
 
+	// Determiniza de forma recursiva
 	public static Automaton determinize(Automaton NFA) {
 		NFA = _determinize(NFA);
 
@@ -498,6 +509,7 @@ public class Automaton {
 		return NFA;
 	}
 
+	// Possíveis sentenças de tamanho n
 	public void possibleStrings(int maxLength, char[] chars, String curr) {
 		if (curr.length() == maxLength)
 			enumN.addLast(curr);
@@ -511,6 +523,7 @@ public class Automaton {
 		}
 	}
 
+	// Enumera sentenças de tamanho n
 	public LinkedList<String> getEnumN(int n) {
 		enumN.clear();
 
@@ -530,6 +543,7 @@ public class Automaton {
 		return sentences;
 	}
 
+	// Reconhece uma sentença
 	public Boolean recognize(String sentence) {
 		String currentState = initialState;
 
@@ -557,6 +571,7 @@ public class Automaton {
 		return false;
 	}
 
+  // Converte para String
 	public String toString() {
 		String ln = System.getProperty("line.separator");
 		String str = "  |  |";
@@ -597,6 +612,7 @@ public class Automaton {
 		return str;
 	}
 
+	// Lê um autômato
 	public static Automaton readAutomaton(String s) {
 		String[] lines = s.split(System.getProperty("line.separator"));
 		LinkedList<String> symbols = new LinkedList<String>();
